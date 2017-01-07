@@ -1,0 +1,35 @@
+hash: 6c3158332612d5f4b1c6435864fcf0b82fe03c2d8b05b8e1ebb6f012c19a6283
+updated: 2017-01-07T11:28:18.6588406-05:00
+imports:
+- name: github.com/go-gl/gl
+  version: b303bcb3e83b7ef645a5104e1c2db7f8d9e8918a
+  subpackages:
+  - v2.1/gl
+- name: github.com/go-gl/glfw
+  version: 6e7202f2d691ed1d79bcdaed6cce0061006ce565
+  subpackages:
+  - v3.1/glfw
+- name: github.com/gopherjs/gopherjs
+  version: db2cfff3878815d744fb4a4bd07cba0596eaf2a5
+  subpackages:
+  - js
+- name: github.com/gopherjs/webgl
+  version: a2d36020a9b2af0f7aefb23467ab48f3b501beec
+- name: github.com/hajimehoshi/ebiten
+  version: 96284a564f3b14d0507670bf9268bb0970768e5f
+  subpackages:
+  - internal/graphics
+  - internal/graphics/opengl
+  - internal/jni
+  - internal/loop
+  - internal/pixels
+  - internal/ui
+- name: github.com/uber-go/atomic
+  version: 0c9e689d64f004564b79d9a663634756df322902
+- name: github.com/uber-go/zap
+  version: a5783ee4b216a927da8f839c45cfbf9d694e1467
+- name: golang.org/x/mobile
+  version: ca304836200281f5c55eecc2b8aa6d54bfd02b97
+  subpackages:
+  - gl
+testImports: []
