@@ -1,5 +1,5 @@
-hash: 6c3158332612d5f4b1c6435864fcf0b82fe03c2d8b05b8e1ebb6f012c19a6283
-updated: 2017-01-07T11:28:18.6588406-05:00
+hash: 3fb567fd99b21e18a799a6fffb42ca952698be1787a8d938d3c56353bef0b76b
+updated: 2017-01-08T07:10:31.9941449-05:00
 imports:
 - name: github.com/go-gl/gl
   version: b303bcb3e83b7ef645a5104e1c2db7f8d9e8918a
@@ -24,6 +24,8 @@ imports:
   - internal/loop
   - internal/pixels
   - internal/ui
+- name: github.com/ranchblt/statemanager
+  version: f08714fe0764ed3b8c1216415a83267c120cc0b6
 - name: github.com/uber-go/atomic
   version: 0c9e689d64f004564b79d9a663634756df322902
 - name: github.com/uber-go/zap
