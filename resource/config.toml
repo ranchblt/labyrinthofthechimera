@@ -1,2 +1,5 @@
 [wizard]
 move_speed = 5
+
+[game]
+lives = 3

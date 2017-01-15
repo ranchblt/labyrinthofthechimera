@@ -25,6 +25,7 @@ type Game struct {
 // resources is where all the assets are stored
 type resources struct {
 	wizardImage *ebiten.Image
+	heartImage  *ebiten.Image
 }
 
 // NewGame returns a new labyrinth game.
@@ -52,6 +53,9 @@ func NewGame(debug *bool) *Game {
 	stateManager.Add(&gameState{
 		keyboardWrapper: g.keyboardWrapper,
 		wizard:          wizard,
+		heartImage:      g.resources.heartImage,
+		lives:           g.config.Lives,
+		maxLives:        g.config.Lives,
 	})
 	stateManager.SetActive(gameStateID)
 
@@ -99,6 +103,12 @@ func initImages(res *resources) {
 	handleErr(err)
 
 	res.wizardImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
+	handleErr(err)
+
+	i, err = openImage("heart.png")
+	handleErr(err)
+
+	res.heartImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
 	handleErr(err)
 
 }

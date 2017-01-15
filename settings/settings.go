@@ -10,6 +10,7 @@ import (
 // no recompile required.
 type Config struct {
 	WizardMoveSpeed int
+	Lives           int
 }
 
 // New gets a new config loaded from file
@@ -28,6 +29,12 @@ func New() *Config {
 		panic("config missing " + moveSpeed)
 	}
 	c.WizardMoveSpeed = int(t.Get(moveSpeed).(int64))
+
+	const lives = "game.lives"
+	if !t.Has(lives) {
+		panic("config missing " + lives)
+	}
+	c.Lives = int(t.Get(lives).(int64))
 
 	return c
 }

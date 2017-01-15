@@ -11,6 +11,9 @@ const gameStateID = "game"
 type gameState struct {
 	keyboardWrapper *KeyboardWrapper
 	wizard          *wizard
+	heartImage      *ebiten.Image
+	maxLives        int
+	lives           int
 }
 
 func (s *gameState) OnEnter() error {
@@ -22,6 +25,11 @@ func (s *gameState) OnExit() error {
 }
 
 func (s *gameState) Draw(r *ebiten.Image) error {
+
+	if err := s.drawLives(r); err != nil {
+		return err
+	}
+
 	if err := s.wizard.Draw(r); err != nil {
 		return err
 	}
@@ -29,8 +37,24 @@ func (s *gameState) Draw(r *ebiten.Image) error {
 	return nil
 }
 
-func (s *gameState) Update() error {
+func (s *gameState) drawLives(r *ebiten.Image) error {
+	w, h := s.heartImage.Size()
+	heartStartX := ScreenWidth - (s.maxLives * w)
+	for i := s.lives; i != 0; i-- {
+		h := &Stationary{
+			Image: s.heartImage,
+			X:     heartStartX - i*w,
+			Y:     h,
+		}
+		r.DrawImage(h.Image, &ebiten.DrawImageOptions{
+			ImageParts: h,
+		})
+	}
 
+	return nil
+}
+
+func (s *gameState) Update() error {
 	if err := s.wizard.Update(s.keyboardWrapper); err != nil {
 		return err
 	}
