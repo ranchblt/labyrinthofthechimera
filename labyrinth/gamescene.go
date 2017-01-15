@@ -10,6 +10,7 @@ const gameStateID = "game"
 
 type gameState struct {
 	keyboardWrapper *KeyboardWrapper
+	wizard          *wizard
 }
 
 func (s *gameState) OnEnter() error {
@@ -20,7 +21,12 @@ func (s *gameState) OnExit() error {
 	return nil
 }
 
-func (s *gameState) Draw(screen *ebiten.Image) error {
+func (s *gameState) Draw(r *ebiten.Image) error {
+
+	if err := s.wizard.Draw(r); err != nil {
+		return err
+	}
+
 	return nil
 }
 
