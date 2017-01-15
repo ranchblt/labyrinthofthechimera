@@ -3,8 +3,9 @@ package labyrinth
 import "github.com/hajimehoshi/ebiten"
 
 type wizard struct {
-	image  *ebiten.Image
-	Center *coord
+	image     *ebiten.Image
+	Center    *coord
+	moveSpeed int
 }
 
 // newWizard returns an initialized wizard
@@ -15,12 +16,21 @@ func newWizard(i *ebiten.Image) *wizard {
 	}
 
 	return &wizard{
-		image:  i,
-		Center: c,
+		image:     i,
+		Center:    c,
+		moveSpeed: 5,
 	}
 }
 
-func (w *wizard) Update() error {
+func (w *wizard) Update(keys *KeyboardWrapper) error {
+	if keys.IsKeyPressed(ebiten.KeyW) {
+		w.Center.y -= w.moveSpeed
+	}
+
+	if keys.IsKeyPressed(ebiten.KeyS) {
+		w.Center.y += w.moveSpeed
+	}
+
 	return nil
 }
 

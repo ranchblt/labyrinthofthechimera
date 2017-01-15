@@ -22,7 +22,6 @@ func (s *gameState) OnExit() error {
 }
 
 func (s *gameState) Draw(r *ebiten.Image) error {
-
 	if err := s.wizard.Draw(r); err != nil {
 		return err
 	}
@@ -31,6 +30,11 @@ func (s *gameState) Draw(r *ebiten.Image) error {
 }
 
 func (s *gameState) Update() error {
+
+	if err := s.wizard.Update(s.keyboardWrapper); err != nil {
+		return err
+	}
+
 	if s.keyboardWrapper.KeyPushed(ebiten.KeyEscape) {
 		return errors.New("User wanted to quit") //Best way to do this?
 	}
