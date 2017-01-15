@@ -5,3 +5,5 @@ import:
   version: ^1.0.0
 - package: github.com/ranchblt/statemanager
   version: ^1.0.0
+- package: github.com/pelletier/go-toml
+  version: ^0.4.0

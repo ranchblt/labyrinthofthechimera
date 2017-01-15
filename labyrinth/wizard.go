@@ -9,7 +9,7 @@ type wizard struct {
 }
 
 // newWizard returns an initialized wizard
-func newWizard(i *ebiten.Image) *wizard {
+func newWizard(i *ebiten.Image, speed int) *wizard {
 	c := &coord{
 		x: 100,
 		y: 100,
@@ -18,7 +18,7 @@ func newWizard(i *ebiten.Image) *wizard {
 	return &wizard{
 		image:     i,
 		Center:    c,
-		moveSpeed: 5,
+		moveSpeed: speed,
 	}
 }
 

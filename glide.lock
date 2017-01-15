@@ -1,5 +1,5 @@
-hash: 3fb567fd99b21e18a799a6fffb42ca952698be1787a8d938d3c56353bef0b76b
-updated: 2017-01-08T07:10:31.9941449-05:00
+hash: d8a1560bce18a33612044e334207367a0af45a9f18505187a4f827d67b9524c2
+updated: 2017-01-15T12:40:05.5694847-05:00
 imports:
 - name: github.com/go-gl/gl
   version: b303bcb3e83b7ef645a5104e1c2db7f8d9e8918a
@@ -10,7 +10,7 @@ imports:
   subpackages:
   - v3.1/glfw
 - name: github.com/gopherjs/gopherjs
-  version: db2cfff3878815d744fb4a4bd07cba0596eaf2a5
+  version: 0203db228191af09ef6f5644c623f25280d22ba3
   subpackages:
   - js
 - name: github.com/gopherjs/webgl
@@ -24,6 +24,10 @@ imports:
   - internal/loop
   - internal/pixels
   - internal/ui
+- name: github.com/pelletier/go-buffruneio
+  version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
+- name: github.com/pelletier/go-toml
+  version: d464759235b8fd59f8ab4c44807d7c36e1678add
 - name: github.com/ranchblt/statemanager
   version: f08714fe0764ed3b8c1216415a83267c120cc0b6
 - name: github.com/uber-go/atomic
@@ -31,7 +35,7 @@ imports:
 - name: github.com/uber-go/zap
   version: a5783ee4b216a927da8f839c45cfbf9d694e1467
 - name: golang.org/x/mobile
-  version: ca304836200281f5c55eecc2b8aa6d54bfd02b97
+  version: 100a59ffc15acb7702334fcaac3e892d6d404096
   subpackages:
   - gl
 testImports: []

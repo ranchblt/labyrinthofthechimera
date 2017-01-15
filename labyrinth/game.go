@@ -3,6 +3,8 @@ package labyrinth
 import (
 	"sync"
 
+	"github.com/ranchblt/labyrinthofthechimera/settings"
+
 	"github.com/hajimehoshi/ebiten"
 	"github.com/ranchblt/statemanager"
 	"github.com/uber-go/zap"
@@ -17,6 +19,7 @@ type Game struct {
 	stateManager    statemanager.StateManager
 	keyboardWrapper *KeyboardWrapper
 	resources       *resources
+	config          *settings.Config
 }
 
 // resources is where all the assets are stored
@@ -38,11 +41,12 @@ func NewGame(debug *bool) *Game {
 		logger:          logger,
 		keyboardWrapper: keyboardWrapper,
 		resources:       &resources{},
+		config:          settings.New(),
 	}
 
 	g.load(logger)
 
-	wizard := newWizard(g.resources.wizardImage)
+	wizard := newWizard(g.resources.wizardImage, g.config.WizardMoveSpeed)
 
 	stateManager := statemanager.New()
 	stateManager.Add(&gameState{
