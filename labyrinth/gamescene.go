@@ -1,8 +1,12 @@
 package labyrinth
 
-import "github.com/hajimehoshi/ebiten"
+import (
+	"errors"
 
-const gameStateId = "game"
+	"github.com/hajimehoshi/ebiten"
+)
+
+const gameStateID = "game"
 
 type gameState struct {
 	keyboardWrapper *KeyboardWrapper
@@ -21,9 +25,13 @@ func (s *gameState) Draw(screen *ebiten.Image) error {
 }
 
 func (s *gameState) Update() error {
+	if s.keyboardWrapper.KeyPushed(ebiten.KeyEscape) {
+		return errors.New("User wanted to quit") //Best way to do this?
+	}
+
 	return nil
 }
 
 func (s *gameState) ID() string {
-	return gameStateId
+	return gameStateID
 }

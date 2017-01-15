@@ -30,7 +30,7 @@ func NewGame(debug *bool) *Game {
 	stateManager.Add(&gameState{
 		keyboardWrapper: keyboardWrapper,
 	})
-	stateManager.SetActive(gameStateId)
+	stateManager.SetActive(gameStateID)
 
 	return &Game{
 		logger:          logger,
