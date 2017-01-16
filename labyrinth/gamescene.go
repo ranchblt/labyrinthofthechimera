@@ -39,12 +39,13 @@ func (s *gameState) Draw(r *ebiten.Image) error {
 
 func (s *gameState) drawLives(r *ebiten.Image) error {
 	w, h := s.heartImage.Size()
-	heartStartX := ScreenWidth - (s.maxLives * w)
+	//fmt.Println(ScreenWidth - (s.maxLives * w))
+	heartStartX := ScreenWidth - (s.maxLives * w / 2)
 	for i := s.lives; i != 0; i-- {
 		h := &Stationary{
 			Image: s.heartImage,
-			X:     heartStartX - i*w,
-			Y:     h,
+			X:     heartStartX - i*w - (5 * i),
+			Y:     h / 2,
 		}
 		r.DrawImage(h.Image, &ebiten.DrawImageOptions{
 			ImageParts: h,
