@@ -25,10 +25,18 @@ func newWizard(i *ebiten.Image, speed int) *wizard {
 func (w *wizard) Update(keys *KeyboardWrapper) error {
 	if keys.IsKeyPressed(ebiten.KeyW) {
 		w.Center.y -= w.moveSpeed
+		_, height := w.image.Size()
+		if w.Center.y-(height/2) <= 0 {
+			w.Center.y = (height / 2)
+		}
 	}
 
 	if keys.IsKeyPressed(ebiten.KeyS) {
 		w.Center.y += w.moveSpeed
+		_, height := w.image.Size()
+		if w.Center.y+(height/2) >= ScreenHeight {
+			w.Center.y = ScreenHeight - (height / 2)
+		}
 	}
 
 	return nil
