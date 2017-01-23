@@ -3,3 +3,6 @@ move_speed = 5
 
 [game]
 lives = 3
+
+[fireball]
+move_speed = 7

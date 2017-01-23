@@ -3,22 +3,25 @@ package labyrinth
 import "github.com/hajimehoshi/ebiten"
 
 type wizard struct {
-	image     *ebiten.Image
-	Center    *coord
-	moveSpeed int
+	image       *ebiten.Image
+	Center      *coord
+	moveSpeed   int
+	fireballs   []*fireball
+	fireCreator *fireballCreator
 }
 
 // newWizard returns an initialized wizard
-func newWizard(i *ebiten.Image, speed int) *wizard {
+func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator) *wizard {
 	c := &coord{
 		x: 100,
 		y: 100,
 	}
 
 	return &wizard{
-		image:     i,
-		Center:    c,
-		moveSpeed: speed,
+		image:       i,
+		Center:      c,
+		moveSpeed:   speed,
+		fireCreator: fbc,
 	}
 }
 
@@ -39,6 +42,17 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 		}
 	}
 
+	if keys.IsKeyPressed(ebiten.KeySpace) {
+		f := w.fireCreator.newFireball(w.Center, normalFireball)
+		w.fireballs = append(w.fireballs, f)
+	}
+
+	for _, f := range w.fireballs {
+		if err := f.Update(); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -47,6 +61,13 @@ func (w *wizard) Draw(r *ebiten.Image) error {
 	r.DrawImage(w.image, &ebiten.DrawImageOptions{
 		ImageParts: w,
 	})
+
+	for _, f := range w.fireballs {
+		if err := f.Draw(r); err != nil {
+			return err
+		}
+
+	}
 
 	return nil
 }

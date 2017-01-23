@@ -24,8 +24,9 @@ type Game struct {
 
 // resources is where all the assets are stored
 type resources struct {
-	wizardImage *ebiten.Image
-	heartImage  *ebiten.Image
+	wizardImage   *ebiten.Image
+	heartImage    *ebiten.Image
+	fireballImage *ebiten.Image
 }
 
 // NewGame returns a new labyrinth game.
@@ -47,7 +48,12 @@ func NewGame(debug *bool) *Game {
 
 	g.load(logger)
 
-	wizard := newWizard(g.resources.wizardImage, g.config.WizardMoveSpeed)
+	fbc := &fireballCreator{
+		image:     g.resources.fireballImage,
+		moveSpeed: g.config.FireballSpeed,
+	}
+
+	wizard := newWizard(g.resources.wizardImage, g.config.WizardMoveSpeed, fbc)
 
 	stateManager := statemanager.New()
 	stateManager.Add(&gameState{
@@ -111,4 +117,9 @@ func initImages(res *resources) {
 	res.heartImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
 	handleErr(err)
 
+	i, err = openImage("fireball.png")
+	handleErr(err)
+
+	res.fireballImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
+	handleErr(err)
 }

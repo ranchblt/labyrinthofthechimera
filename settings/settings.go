@@ -10,6 +10,7 @@ import (
 // no recompile required.
 type Config struct {
 	WizardMoveSpeed int
+	FireballSpeed   int
 	Lives           int
 }
 
@@ -35,6 +36,12 @@ func New() *Config {
 		panic("config missing " + lives)
 	}
 	c.Lives = int(t.Get(lives).(int64))
+
+	const fbSpeed = "fireball.move_speed"
+	if !t.Has(fbSpeed) {
+		panic("config missing " + fbSpeed)
+	}
+	c.FireballSpeed = int(t.Get(fbSpeed).(int64))
 
 	return c
 }
