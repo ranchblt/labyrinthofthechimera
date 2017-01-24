@@ -44,7 +44,7 @@ func (f *fireball) Len() int {
 }
 
 func (f *fireball) updateNormalFireball() error {
-	f.center.y += f.moveSpeed
+	f.center.x += f.moveSpeed
 	return nil
 }
 
@@ -68,10 +68,10 @@ type fireballCreator struct {
 	moveSpeed int
 }
 
-func (f *fireballCreator) newFireball(c *coord, class fireballClass) *fireball {
+func (f *fireballCreator) newFireball(c coord, class fireballClass) *fireball {
 	return &fireball{
 		image:     f.image,
-		center:    c,
+		center:    &c,
 		moveSpeed: f.moveSpeed,
 		class:     class,
 	}

@@ -43,7 +43,7 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 	}
 
 	if keys.IsKeyPressed(ebiten.KeySpace) {
-		f := w.fireCreator.newFireball(w.Center, normalFireball)
+		f := w.fireCreator.newFireball(*w.Center, normalFireball)
 		w.fireballs = append(w.fireballs, f)
 	}
 
