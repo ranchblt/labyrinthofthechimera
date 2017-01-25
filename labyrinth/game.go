@@ -55,7 +55,13 @@ func NewGame(debug *bool) *Game {
 		moveSpeed: g.config.FireballSpeed,
 	}
 
-	wizard := newWizard(g.resources.wizardImage, g.config.WizardMoveSpeed, fbc)
+	wizard := newWizard(
+		g.resources.wizardImage,
+		g.config.WizardMoveSpeed,
+		fbc,
+		g.upKeys,
+		g.downKeys,
+	)
 
 	stateManager := statemanager.New()
 	stateManager.Add(&gameState{

@@ -8,10 +8,12 @@ type wizard struct {
 	moveSpeed   int
 	fireballs   []*fireball
 	fireCreator *fireballCreator
+	upKeys      []ebiten.Key
+	downKeys    []ebiten.Key
 }
 
 // newWizard returns an initialized wizard
-func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator) *wizard {
+func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key) *wizard {
 	c := &coord{
 		x: 100,
 		y: 100,
@@ -22,16 +24,26 @@ func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator) *wizard {
 		Center:      c,
 		moveSpeed:   speed,
 		fireCreator: fbc,
+		upKeys:      upkeys,
+		downKeys:    downkeys,
 	}
 }
 
 func (w *wizard) Update(keys *KeyboardWrapper) error {
-	if keys.IsKeyPressed(ebiten.KeyW) {
-		w.moveUp()
+	movedUp := false
+	for _, k := range w.upKeys {
+		if keys.IsKeyPressed(k) && !movedUp {
+			w.moveUp()
+			movedUp = true
+		}
 	}
 
-	if keys.IsKeyPressed(ebiten.KeyS) {
-		w.moveDown()
+	movedDown := false
+	for _, k := range w.downKeys {
+		if keys.IsKeyPressed(k) && !movedDown {
+			w.moveDown()
+			movedDown = true
+		}
 	}
 
 	if keys.IsKeyPressed(ebiten.KeySpace) {
