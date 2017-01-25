@@ -27,19 +27,11 @@ func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator) *wizard {
 
 func (w *wizard) Update(keys *KeyboardWrapper) error {
 	if keys.IsKeyPressed(ebiten.KeyW) {
-		w.Center.y -= w.moveSpeed
-		_, height := w.image.Size()
-		if w.Center.y-(height/2) <= 0 {
-			w.Center.y = (height / 2)
-		}
+		w.moveUp()
 	}
 
 	if keys.IsKeyPressed(ebiten.KeyS) {
-		w.Center.y += w.moveSpeed
-		_, height := w.image.Size()
-		if w.Center.y+(height/2) >= ScreenHeight {
-			w.Center.y = ScreenHeight - (height / 2)
-		}
+		w.moveDown()
 	}
 
 	if keys.IsKeyPressed(ebiten.KeySpace) {
@@ -65,8 +57,23 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 	return nil
 }
 
-func (w *wizard) Draw(r *ebiten.Image) error {
+func (w *wizard) moveUp() {
+	w.Center.y -= w.moveSpeed
+	_, height := w.image.Size()
+	if w.Center.y-(height/2) <= 0 {
+		w.Center.y = (height / 2)
+	}
+}
 
+func (w *wizard) moveDown() {
+	w.Center.y += w.moveSpeed
+	_, height := w.image.Size()
+	if w.Center.y+(height/2) >= ScreenHeight {
+		w.Center.y = ScreenHeight - (height / 2)
+	}
+}
+
+func (w *wizard) Draw(r *ebiten.Image) error {
 	r.DrawImage(w.image, &ebiten.DrawImageOptions{
 		ImageParts: w,
 	})
@@ -75,7 +82,6 @@ func (w *wizard) Draw(r *ebiten.Image) error {
 		if err := f.Draw(r); err != nil {
 			return err
 		}
-
 	}
 
 	return nil
