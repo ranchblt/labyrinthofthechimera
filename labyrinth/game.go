@@ -20,6 +20,8 @@ type Game struct {
 	keyboardWrapper *KeyboardWrapper
 	resources       *resources
 	config          *settings.Config
+	upKeys          []ebiten.Key
+	downKeys        []ebiten.Key
 }
 
 // resources is where all the assets are stored
@@ -92,13 +94,33 @@ func (g *Game) Update(r *ebiten.Image) error {
 func (g *Game) load(logger zap.Logger) {
 	var wg sync.WaitGroup
 
-	wg.Add(1)
+	wg.Add(2)
 
 	go func(g *Game) {
 		defer wg.Done()
 
 		initImages(g.resources)
 		logger.Debug("images loaded")
+	}(g)
+
+	go func(g *Game) {
+		defer wg.Done()
+
+		for _, k := range g.config.UpKeys {
+			key, err := g.keyboardWrapper.Parse(k)
+			if err != nil {
+				panic("Invalid key in config " + k)
+			}
+			g.upKeys = append(g.upKeys, key)
+		}
+
+		for _, k := range g.config.DownKeys {
+			key, err := g.keyboardWrapper.Parse(k)
+			if err != nil {
+				panic("Invalid key in config " + k)
+			}
+			g.downKeys = append(g.downKeys, key)
+		}
 	}(g)
 
 	wg.Wait()

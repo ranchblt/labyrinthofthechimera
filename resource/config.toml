@@ -3,6 +3,8 @@ move_speed = 5
 
 [game]
 lives = 3
+up_keys = ["W", "UP"]
+down_keys = ["S", "DOWN"]
 
 [fireball]
 move_speed = 7

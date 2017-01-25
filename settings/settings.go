@@ -12,6 +12,8 @@ type Config struct {
 	WizardMoveSpeed int
 	FireballSpeed   int
 	Lives           int
+	UpKeys          []string
+	DownKeys        []string
 }
 
 // New gets a new config loaded from file
@@ -26,22 +28,30 @@ func New() *Config {
 	}
 
 	const moveSpeed = "wizard.move_speed"
-	if !t.Has(moveSpeed) {
-		panic("config missing " + moveSpeed)
-	}
+	checkRequired(t, moveSpeed)
 	c.WizardMoveSpeed = int(t.Get(moveSpeed).(int64))
 
 	const lives = "game.lives"
-	if !t.Has(lives) {
-		panic("config missing " + lives)
-	}
+	checkRequired(t, lives)
 	c.Lives = int(t.Get(lives).(int64))
 
+	const upKeys = "game.up_keys"
+	checkRequired(t, upKeys)
+	c.UpKeys = t.Get(upKeys).([]string)
+
+	const downKeys = "game.down_keys"
+	checkRequired(t, downKeys)
+	c.DownKeys = t.Get(downKeys).([]string)
+
 	const fbSpeed = "fireball.move_speed"
-	if !t.Has(fbSpeed) {
-		panic("config missing " + fbSpeed)
-	}
+	checkRequired(t, fbSpeed)
 	c.FireballSpeed = int(t.Get(fbSpeed).(int64))
 
 	return c
+}
+
+func checkRequired(t *toml.TomlTree, key string) {
+	if !t.Has(key) {
+		panic("config missing " + key)
+	}
 }
