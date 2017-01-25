@@ -93,6 +93,20 @@ func (kw *KeyboardWrapper) KeyPushed(key ebiten.Key) bool {
 	return kw.keyState[key] == 1
 }
 
+// LastKeysPushed returns all keys that were pushed
+// useful if you don't know what the user input might be for
+// changing the key bindings.
+// Careful using this looping through a map is slow
+func (kw *KeyboardWrapper) LastKeysPushed() []ebiten.Key {
+	keysPressed := []ebiten.Key{}
+	for key, value := range kw.keyState {
+		if value > 0 {
+			keysPressed = append(keysPressed, key)
+		}
+	}
+	return keysPressed
+}
+
 func (kw *KeyboardWrapper) Update() {
 	for _, key := range kw.keys {
 		if kw.IsKeyPressed(key) {
