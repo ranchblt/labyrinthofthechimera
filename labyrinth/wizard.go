@@ -43,15 +43,24 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 	}
 
 	if keys.IsKeyPressed(ebiten.KeySpace) {
-		f := w.fireCreator.newFireball(*w.Center, normalFireball)
-		w.fireballs = append(w.fireballs, f)
+		if len(w.fireballs) == 0 {
+			f := w.fireCreator.newFireball(*w.Center, normalFireball)
+			w.fireballs = append(w.fireballs, f)
+		}
 	}
 
+	activeFireballs := []*fireball{}
 	for _, f := range w.fireballs {
 		if err := f.Update(); err != nil {
 			return err
 		}
+		if f.active {
+			activeFireballs = append(activeFireballs, f)
+		}
 	}
+
+	// Only keep active fireballs in the array
+	w.fireballs = activeFireballs
 
 	return nil
 }

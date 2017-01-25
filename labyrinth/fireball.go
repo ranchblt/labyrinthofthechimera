@@ -17,9 +17,15 @@ type fireball struct {
 	moveSpeed int
 	center    *coord
 	class     fireballClass
+	active    bool
 }
 
 func (f *fireball) Update() error {
+	if f.offScreen() {
+		f.active = false
+		return nil
+	}
+
 	switch {
 	case f.class == normalFireball:
 		if err := f.updateNormalFireball(); err != nil {
@@ -32,9 +38,11 @@ func (f *fireball) Update() error {
 }
 
 func (f *fireball) Draw(r *ebiten.Image) error {
-	r.DrawImage(f.image, &ebiten.DrawImageOptions{
-		ImageParts: f,
-	})
+	if f.active {
+		r.DrawImage(f.image, &ebiten.DrawImageOptions{
+			ImageParts: f,
+		})
+	}
 
 	return nil
 }
@@ -63,6 +71,12 @@ func (f *fireball) Src(i int) (x0, y0, x1, y1 int) {
 	return 0, 0, width, height
 }
 
+// offscreen checks if the left most part of the image is past the ScreenWidth
+func (f *fireball) offScreen() bool {
+	w, _ := f.image.Size()
+	return f.center.X()-w > ScreenWidth
+}
+
 type fireballCreator struct {
 	image     *ebiten.Image
 	moveSpeed int
@@ -74,5 +88,6 @@ func (f *fireballCreator) newFireball(c coord, class fireballClass) *fireball {
 		center:    &c,
 		moveSpeed: f.moveSpeed,
 		class:     class,
+		active:    true,
 	}
 }
