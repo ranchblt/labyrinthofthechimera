@@ -37,11 +37,19 @@ func New() *Config {
 
 	const upKeys = "game.up_keys"
 	checkRequired(t, upKeys)
-	c.UpKeys = t.Get(upKeys).([]string)
+	c.UpKeys = []string{}
+	temp := t.Get(upKeys).([]interface{})
+	for _, i := range temp {
+		c.UpKeys = append(c.UpKeys, i.(string))
+	}
 
 	const downKeys = "game.down_keys"
 	checkRequired(t, downKeys)
-	c.DownKeys = t.Get(downKeys).([]string)
+	c.DownKeys = []string{}
+	temp = t.Get(downKeys).([]interface{})
+	for _, i := range temp {
+		c.DownKeys = append(c.DownKeys, i.(string))
+	}
 
 	const fbSpeed = "fireball.move_speed"
 	checkRequired(t, fbSpeed)
