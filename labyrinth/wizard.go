@@ -16,7 +16,8 @@ type wizard struct {
 func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key) *wizard {
 	c := &coord{
 		x: 100,
-		y: 100,
+		// 40 is half the image height for the wizard
+		y: MinPlayAreaHeight + 40,
 	}
 
 	return &wizard{
@@ -72,8 +73,8 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 func (w *wizard) moveUp() {
 	w.Center.y -= w.moveSpeed
 	_, height := w.image.Size()
-	if w.Center.y-(height/2) <= 0 {
-		w.Center.y = (height / 2)
+	if w.Center.y-(height/2) <= MinPlayAreaHeight {
+		w.Center.y = MinPlayAreaHeight + (height / 2)
 	}
 }
 

@@ -13,6 +13,9 @@ import (
 const ScreenWidth = 1280
 const ScreenHeight = 720
 
+// used for cordoning off the top bar from the game area
+const MinPlayAreaHeight = 50
+
 // Game is a labyrinth game.
 type Game struct {
 	logger          zap.Logger
