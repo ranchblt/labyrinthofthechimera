@@ -13,11 +13,11 @@ func (s *Stationary) Len() int {
 }
 
 func (s *Stationary) Dst(i int) (x0, y0, x1, y1 int) {
-	w, h := s.Image.Size()
+	width, height := s.Image.Size()
 	return s.X,
 		s.Y,
-		s.X + h,
-		s.Y + w
+		s.X + width,
+		s.Y + height
 }
 
 func (s *Stationary) Src(i int) (x0, y0, x1, y1 int) {

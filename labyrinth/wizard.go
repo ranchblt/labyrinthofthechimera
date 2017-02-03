@@ -108,10 +108,10 @@ func (w *wizard) Dst(i int) (x0, y0, x1, y1 int) {
 	width, height := w.image.Size()
 	height = height / 2
 	width = width / 2
-	return w.Center.x - height,
-		w.Center.y - width,
-		w.Center.x + height,
-		w.Center.y + width
+	return w.Center.x - width,
+		w.Center.y - height,
+		w.Center.x + width,
+		w.Center.y + height
 }
 
 func (w *wizard) Src(i int) (x0, y0, x1, y1 int) {
