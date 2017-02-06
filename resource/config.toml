@@ -6,5 +6,8 @@ lives = 3
 up_keys = ["W", "UP"]
 down_keys = ["S", "DOWN"]
 
+# used for cordoning off the top bar from the game area
+min_play_area_height = 50
+
 [fireball]
 move_speed = 7

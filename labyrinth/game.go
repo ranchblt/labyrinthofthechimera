@@ -15,9 +15,6 @@ import (
 const ScreenWidth = 1280
 const ScreenHeight = 720
 
-// used for cordoning off the top bar from the game area
-const MinPlayAreaHeight = 50
-
 // Game is a labyrinth game.
 type Game struct {
 	logger          zap.Logger
@@ -67,17 +64,19 @@ func NewGame(debug *bool) *Game {
 		fbc,
 		g.upKeys,
 		g.downKeys,
+		g.config.MinPlayAreaHeight,
 	)
 
 	stateManager := statemanager.New()
 	stateManager.Add(&gameState{
-		keyboardWrapper:  g.keyboardWrapper,
-		wizard:           wizard,
-		heartImage:       g.resources.heartImage,
-		lives:            g.config.Lives,
-		maxLives:         g.config.Lives,
-		fastPowerupImage: g.resources.fireballImage,
-		rand:             g.rand,
+		keyboardWrapper:   g.keyboardWrapper,
+		wizard:            wizard,
+		heartImage:        g.resources.heartImage,
+		lives:             g.config.Lives,
+		maxLives:          g.config.Lives,
+		fastPowerupImage:  g.resources.fireballImage,
+		rand:              g.rand,
+		minPlayAreaHeight: g.config.MinPlayAreaHeight,
 	})
 	stateManager.SetActive(gameStateID)
 

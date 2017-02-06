@@ -3,30 +3,33 @@ package labyrinth
 import "github.com/hajimehoshi/ebiten"
 
 type wizard struct {
-	image       *ebiten.Image
-	Center      *coord
-	moveSpeed   int
-	fireballs   []*fireball
-	fireCreator *fireballCreator
-	upKeys      []ebiten.Key
-	downKeys    []ebiten.Key
+	image             *ebiten.Image
+	Center            *coord
+	moveSpeed         int
+	fireballs         []*fireball
+	fireCreator       *fireballCreator
+	upKeys            []ebiten.Key
+	downKeys          []ebiten.Key
+	minPlayAreaHeight int
 }
 
 // newWizard returns an initialized wizard
-func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key) *wizard {
+func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key, minPlayAreaHeight int) *wizard {
+	_, h := i.Size()
 	c := &coord{
 		x: 100,
 		// 40 is half the image height for the wizard
-		y: MinPlayAreaHeight + 40,
+		y: minPlayAreaHeight + h/2,
 	}
 
 	return &wizard{
-		image:       i,
-		Center:      c,
-		moveSpeed:   speed,
-		fireCreator: fbc,
-		upKeys:      upkeys,
-		downKeys:    downkeys,
+		image:             i,
+		Center:            c,
+		moveSpeed:         speed,
+		fireCreator:       fbc,
+		upKeys:            upkeys,
+		downKeys:          downkeys,
+		minPlayAreaHeight: minPlayAreaHeight,
 	}
 }
 
@@ -73,8 +76,8 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 func (w *wizard) moveUp() {
 	w.Center.y -= w.moveSpeed
 	_, height := w.image.Size()
-	if w.Center.y-(height/2) <= MinPlayAreaHeight {
-		w.Center.y = MinPlayAreaHeight + (height / 2)
+	if w.Center.y-(height/2) <= w.minPlayAreaHeight {
+		w.Center.y = w.minPlayAreaHeight + (height / 2)
 	}
 }
 

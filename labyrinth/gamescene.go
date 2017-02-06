@@ -12,16 +12,17 @@ import (
 const gameStateID = "game"
 
 type gameState struct {
-	keyboardWrapper  *KeyboardWrapper
-	wizard           *wizard
-	heartImage       *ebiten.Image
-	fastPowerupImage *ebiten.Image
-	powerups         []*powerup
-	powerupTimer     *time.Timer
-	powerupSpawned   bool
-	maxLives         int
-	lives            int
-	rand             *rand.Rand
+	keyboardWrapper   *KeyboardWrapper
+	wizard            *wizard
+	heartImage        *ebiten.Image
+	fastPowerupImage  *ebiten.Image
+	powerups          []*powerup
+	powerupTimer      *time.Timer
+	powerupSpawned    bool
+	maxLives          int
+	lives             int
+	rand              *rand.Rand
+	minPlayAreaHeight int
 }
 
 func (s *gameState) OnEnter() error {
@@ -111,7 +112,7 @@ func (s *gameState) spawnPowerup() {
 	s.powerups = append(s.powerups, &powerup{
 		image: s.fastPowerupImage,
 		class: fastPowerup,
-		x:     s.rand.Intn(ScreenHeight-MinPlayAreaHeight) + MinPlayAreaHeight,
+		x:     s.rand.Intn(ScreenHeight-s.minPlayAreaHeight) + s.minPlayAreaHeight,
 		y:     s.rand.Intn(ScreenWidth-width) + width,
 	})
 	s.powerupSpawned = true
