@@ -2,6 +2,9 @@ package labyrinth
 
 import (
 	"errors"
+	"math/rand"
+
+	"time"
 
 	"github.com/hajimehoshi/ebiten"
 )
@@ -9,11 +12,16 @@ import (
 const gameStateID = "game"
 
 type gameState struct {
-	keyboardWrapper *KeyboardWrapper
-	wizard          *wizard
-	heartImage      *ebiten.Image
-	maxLives        int
-	lives           int
+	keyboardWrapper  *KeyboardWrapper
+	wizard           *wizard
+	heartImage       *ebiten.Image
+	fastPowerupImage *ebiten.Image
+	powerups         []*powerup
+	powerupTimer     *time.Timer
+	powerupSpawned   bool
+	maxLives         int
+	lives            int
+	rand             *rand.Rand
 }
 
 func (s *gameState) OnEnter() error {
@@ -32,6 +40,12 @@ func (s *gameState) Draw(r *ebiten.Image) error {
 
 	if err := s.wizard.Draw(r); err != nil {
 		return err
+	}
+
+	for _, p := range s.powerups {
+		if err := p.Draw(r); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -64,9 +78,41 @@ func (s *gameState) Update() error {
 		return errors.New("User wanted to quit") //Best way to do this?
 	}
 
+	nonExpiredPowups := []*powerup{}
+	for _, p := range s.powerups {
+		if err := p.Update(); err != nil {
+			return err
+		}
+		if !p.expired {
+			nonExpiredPowups = append(nonExpiredPowups, p)
+		}
+	}
+	s.powerups = nonExpiredPowups
+
+	if !s.powerupSpawned {
+		// support random? number in future
+		s.powerupTimer = time.NewTimer(time.Second * 2)
+		go s.spawnPowerup()
+	}
+
 	return nil
 }
 
 func (s *gameState) ID() string {
 	return gameStateID
+}
+
+// spawnPowerup puts a powup randomly on the map so the wizard can shoot it.
+// This should be inside the playable area. Will have to manage in the future
+// so it doesn't spawn on top of a monster.
+func (s *gameState) spawnPowerup() {
+	<-s.powerupTimer.C
+	width, _ := s.wizard.image.Size()
+	s.powerups = append(s.powerups, &powerup{
+		image: s.fastPowerupImage,
+		class: fastPowerup,
+		x:     s.rand.Intn(ScreenHeight-MinPlayAreaHeight) + MinPlayAreaHeight,
+		y:     s.rand.Intn(ScreenWidth-width) + width,
+	})
+	s.powerupSpawned = true
 }

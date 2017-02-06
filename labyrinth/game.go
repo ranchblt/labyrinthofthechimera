@@ -1,7 +1,9 @@
 package labyrinth
 
 import (
+	"math/rand"
 	"sync"
+	"time"
 
 	"github.com/ranchblt/labyrinthofthechimera/settings"
 
@@ -25,6 +27,7 @@ type Game struct {
 	config          *settings.Config
 	upKeys          []ebiten.Key
 	downKeys        []ebiten.Key
+	rand            *rand.Rand
 }
 
 // resources is where all the assets are stored
@@ -68,11 +71,13 @@ func NewGame(debug *bool) *Game {
 
 	stateManager := statemanager.New()
 	stateManager.Add(&gameState{
-		keyboardWrapper: g.keyboardWrapper,
-		wizard:          wizard,
-		heartImage:      g.resources.heartImage,
-		lives:           g.config.Lives,
-		maxLives:        g.config.Lives,
+		keyboardWrapper:  g.keyboardWrapper,
+		wizard:           wizard,
+		heartImage:       g.resources.heartImage,
+		lives:            g.config.Lives,
+		maxLives:         g.config.Lives,
+		fastPowerupImage: g.resources.fireballImage,
+		rand:             g.rand,
 	})
 	stateManager.SetActive(gameStateID)
 
@@ -131,6 +136,9 @@ func (g *Game) load(logger zap.Logger) {
 			g.downKeys = append(g.downKeys, key)
 		}
 	}(g)
+
+	randSource := rand.NewSource(time.Now().UnixNano())
+	g.rand = rand.New(randSource)
 
 	wg.Wait()
 }
