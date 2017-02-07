@@ -12,17 +12,17 @@ import (
 const gameStateID = "game"
 
 type gameState struct {
-	keyboardWrapper   *KeyboardWrapper
-	wizard            *wizard
-	heartImage        *ebiten.Image
-	fastPowerupImage  *ebiten.Image
-	powerups          []*powerup
-	powerupTimer      *time.Timer
-	powerupSpawned    bool
-	maxLives          int
-	lives             int
-	rand              *rand.Rand
-	minPlayAreaHeight int
+	keyboardWrapper     *KeyboardWrapper
+	wizard              *wizard
+	heartImage          *ebiten.Image
+	fastPowerupImage    *ebiten.Image
+	powerups            []*powerup
+	powerupTimer        *time.Timer
+	powerupTimerStarted bool
+	maxLives            int
+	lives               int
+	rand                *rand.Rand
+	minPlayAreaHeight   int
 	// TFE this is just for testing, should not stay this way
 	monsterImage *ebiten.Image
 	monster      *monster
@@ -117,10 +117,11 @@ func (s *gameState) Update() error {
 	}
 	s.powerups = nonExpiredPowups
 
-	if !s.powerupSpawned {
+	if !s.powerupTimerStarted {
 		// support random? number in future
-		s.powerupTimer = time.NewTimer(time.Second * 2)
+		s.powerupTimer = time.NewTimer(time.Second)
 		go s.spawnPowerup()
+		s.powerupTimerStarted = true
 	}
 
 	return nil
@@ -142,5 +143,5 @@ func (s *gameState) spawnPowerup() {
 		x:     s.rand.Intn(ScreenHeight-s.minPlayAreaHeight) + s.minPlayAreaHeight,
 		y:     s.rand.Intn(ScreenWidth-width) + width,
 	})
-	s.powerupSpawned = true
+	s.powerupTimerStarted = false
 }
