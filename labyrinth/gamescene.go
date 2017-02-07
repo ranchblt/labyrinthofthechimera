@@ -79,7 +79,7 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 	for i := s.lives; i != 0; i-- {
 		h := &Stationary{
 			Image: s.heartImage,
-			center: &coord{
+			topLeft: &coord{
 				x: heartStartX - i*w - (5 * i),
 				y: h / 2,
 			},
@@ -141,8 +141,10 @@ func (s *gameState) spawnPowerup() {
 	s.powerups = append(s.powerups, &powerup{
 		image: s.fastPowerupImage,
 		class: fastPowerup,
-		x:     s.rand.Intn(ScreenWidth-width/2-s.wizard.Center.X()-padding*2) + width/2 + s.wizard.Center.X() + padding,
-		y:     s.rand.Intn(ScreenHeight-s.minPlayAreaHeight-padding*2) + s.minPlayAreaHeight + padding,
+		topLeft: &coord{
+			x: s.rand.Intn(ScreenWidth-width/2-s.wizard.Center.X()-padding*2) + width/2 + s.wizard.Center.X() + padding,
+			y: s.rand.Intn(ScreenHeight-s.minPlayAreaHeight-padding*2) + s.minPlayAreaHeight + padding,
+		},
 	})
 	s.powerupTimerStarted = false
 }

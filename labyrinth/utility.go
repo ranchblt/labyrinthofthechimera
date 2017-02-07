@@ -45,10 +45,10 @@ func defaultMobileDST(i int, center *coord, image *ebiten.Image) (x0, y0, x1, y1
 }
 
 // utility function to do DST for a stationary object with no unusual modifications to the return values
-func defaultStationaryDST(i int, center *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
+func defaultStationaryDST(i int, topLeft *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
 	width, height := image.Size()
-	return center.x,
-		center.y,
-		center.x + width,
-		center.y + height
+	return topLeft.X(),
+		topLeft.Y(),
+		topLeft.X() + width,
+		topLeft.Y() + height
 }

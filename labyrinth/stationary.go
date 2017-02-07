@@ -3,8 +3,8 @@ package labyrinth
 import "github.com/hajimehoshi/ebiten"
 
 type Stationary struct {
-	Image  *ebiten.Image
-	center *coord
+	Image   *ebiten.Image
+	topLeft *coord
 }
 
 func (s *Stationary) Len() int {
@@ -12,7 +12,7 @@ func (s *Stationary) Len() int {
 }
 
 func (s *Stationary) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultStationaryDST(i, s.center, s.Image)
+	return defaultStationaryDST(i, s.topLeft, s.Image)
 }
 
 func (s *Stationary) Src(i int) (x0, y0, x1, y1 int) {

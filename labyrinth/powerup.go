@@ -10,8 +10,7 @@ type powerup struct {
 	image   *ebiten.Image
 	class   powerupClass
 	expired bool
-	x       int
-	y       int
+	topLeft *coord
 	timer   *time.Timer
 }
 
@@ -43,13 +42,7 @@ func (p *powerup) Len() int {
 }
 
 func (p *powerup) Dst(i int) (x0, y0, x1, y1 int) {
-	width, height := p.image.Size()
-	height = height / 2
-	width = width / 2
-	return p.x,
-		p.y,
-		p.x + width,
-		p.y + height
+	return defaultStationaryDST(i, p.topLeft, p.image)
 }
 
 func (p *powerup) Src(i int) (x0, y0, x1, y1 int) {
