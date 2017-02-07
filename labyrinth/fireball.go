@@ -57,13 +57,7 @@ func (f *fireball) updateNormalFireball() error {
 }
 
 func (f *fireball) Dst(i int) (x0, y0, x1, y1 int) {
-	width, height := f.image.Size()
-	height = height / 2
-	width = width / 2
-	return f.center.x - width,
-		f.center.y - height,
-		f.center.x + width,
-		f.center.y + height
+	return defaultMobileDST(i, f.center, f.image)
 }
 
 func (f *fireball) Src(i int) (x0, y0, x1, y1 int) {

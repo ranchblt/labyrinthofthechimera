@@ -6,6 +6,7 @@ import (
 
 	_ "image/png" // needed for png images
 
+	"github.com/hajimehoshi/ebiten"
 	"github.com/ranchblt/labyrinthofthechimera/resource"
 )
 
@@ -30,4 +31,24 @@ func handleErr(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// utility function to do DST for a mobile object with no unusual modifications to the return values
+func defaultMobileDST(i int, center *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
+	width, height := image.Size()
+	height = height / 2
+	width = width / 2
+	return center.x - width,
+		center.y - height,
+		center.x + width,
+		center.y + height
+}
+
+// utility function to do DST for a stationary object with no unusual modifications to the return values
+func defaultStationaryDST(i int, center *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
+	width, height := image.Size()
+	return center.x,
+		center.y,
+		center.x + width,
+		center.y + height
 }
