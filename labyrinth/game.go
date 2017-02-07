@@ -32,6 +32,7 @@ type resources struct {
 	wizardImage   *ebiten.Image
 	heartImage    *ebiten.Image
 	fireballImage *ebiten.Image
+	monsterImage  *ebiten.Image
 }
 
 // NewGame returns a new labyrinth game.
@@ -77,6 +78,7 @@ func NewGame(debug *bool) *Game {
 		fastPowerupImage:  g.resources.fireballImage,
 		rand:              g.rand,
 		minPlayAreaHeight: g.config.MinPlayAreaHeight,
+		monsterImage:      g.resources.monsterImage,
 	})
 	stateManager.SetActive(gameStateID)
 
@@ -159,5 +161,11 @@ func initImages(res *resources) {
 	handleErr(err)
 
 	res.fireballImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
+	handleErr(err)
+
+	i, err = openImage("monster.png")
+	handleErr(err)
+
+	res.monsterImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
 	handleErr(err)
 }

@@ -3,29 +3,48 @@ package labyrinth
 import "github.com/hajimehoshi/ebiten"
 
 type monster struct {
-	health int
-	image  *ebiten.Image
-	center *coord
-	active bool
+	health    int
+	image     *ebiten.Image
+	center    *coord
+	active    bool
+	moveClass movementClass
+	speed     int
 }
 
-func (f *monster) Update() error {
-	if f.offScreen() {
-		f.active = false
+type movementClass string
+
+const (
+	straightLine = movementClass("straightLine")
+)
+
+func (m *monster) Update() error {
+	if m.offScreen() {
+		m.active = false
 		return nil
+	}
+
+	switch m.moveClass {
+	case straightLine:
+		m.straightLineMove()
+	default:
+		panic("unknown move class")
 	}
 
 	return nil
 }
 
-func (f *monster) Draw(r *ebiten.Image) error {
-	if f.active {
-		r.DrawImage(f.image, &ebiten.DrawImageOptions{
-			ImageParts: f,
+func (m *monster) Draw(r *ebiten.Image) error {
+	if m.active {
+		r.DrawImage(m.image, &ebiten.DrawImageOptions{
+			ImageParts: m,
 		})
 	}
 
 	return nil
+}
+
+func (m *monster) straightLineMove() {
+	m.center.x -= m.speed
 }
 
 func (m *monster) Len() int {

@@ -23,9 +23,24 @@ type gameState struct {
 	lives             int
 	rand              *rand.Rand
 	minPlayAreaHeight int
+	// TFE this is just for testing, should not stay this way
+	monsterImage *ebiten.Image
+	monster      *monster
 }
 
 func (s *gameState) OnEnter() error {
+	// TFE this is just for testing, should not stay this way
+	s.monster = &monster{
+		health: 3,
+		image:  s.monsterImage,
+		center: &coord{
+			x: ScreenWidth - 50,
+			y: 360,
+		},
+		active:    true,
+		moveClass: straightLine,
+		speed:     1,
+	}
 	return nil
 }
 
@@ -47,6 +62,11 @@ func (s *gameState) Draw(r *ebiten.Image) error {
 		if err := p.Draw(r); err != nil {
 			return err
 		}
+	}
+
+	// TFE this is just for testing, should not stay this way
+	if err := s.monster.Draw(r); err != nil {
+		return err
 	}
 
 	return nil
@@ -73,6 +93,11 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 }
 
 func (s *gameState) Update() error {
+	// TFE this is just for testing, should not stay this way
+	if err := s.monster.Update(); err != nil {
+		return err
+	}
+
 	if err := s.wizard.Update(s.keyboardWrapper); err != nil {
 		return err
 	}
