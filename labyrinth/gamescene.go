@@ -137,11 +137,12 @@ func (s *gameState) ID() string {
 func (s *gameState) spawnPowerup() {
 	<-s.powerupTimer.C
 	width, _ := s.wizard.image.Size()
+	padding := 50
 	s.powerups = append(s.powerups, &powerup{
 		image: s.fastPowerupImage,
 		class: fastPowerup,
-		x:     s.rand.Intn(ScreenHeight-s.minPlayAreaHeight) + s.minPlayAreaHeight,
-		y:     s.rand.Intn(ScreenWidth-width) + width,
+		x:     s.rand.Intn(ScreenWidth-width/2-s.wizard.Center.X()-padding*2) + width/2 + s.wizard.Center.X() + padding,
+		y:     s.rand.Intn(ScreenHeight-s.minPlayAreaHeight-padding*2) + s.minPlayAreaHeight + padding,
 	})
 	s.powerupTimerStarted = false
 }
