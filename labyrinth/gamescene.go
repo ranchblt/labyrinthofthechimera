@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/ranchblt/geometry-jumper/collision"
+	"github.com/ranchblt/labyrinthofthechimera/collision"
 )
 
 const gameStateID = "game"
@@ -152,16 +152,10 @@ func (s *gameState) collisions() {
 		}
 
 		for _, powerup := range s.powerups {
-			width, height := powerup.image.Size()
-			width = width / 2
-			height = height / 2
 			powerupHitbox := collision.Hitbox{
 				Image: powerup.RGBAImage(),
 				// boy I hope this works.
-				Center: &coord{
-					x: powerup.topLeft.x + width,
-					y: powerup.topLeft.y + height,
-				},
+				Center: powerup.Center(),
 			}
 			if collision.IsColliding(&fireballHitbox, &powerupHitbox) {
 				fireball.hit()
