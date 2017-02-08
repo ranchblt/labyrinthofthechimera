@@ -8,6 +8,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/ranchblt/labyrinthofthechimera/resource"
+	"golang.org/x/image/draw"
 )
 
 // openImage gets the image out of go-bindata
@@ -31,6 +32,17 @@ func handleErr(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// helper to convert image to RGBA
+func toRGBA(img image.Image) *image.RGBA {
+	switch img.(type) {
+	case *image.RGBA:
+		return img.(*image.RGBA)
+	}
+	out := image.NewRGBA(img.Bounds())
+	draw.Copy(out, image.Pt(0, 0), img, img.Bounds(), draw.Src, nil)
+	return out
 }
 
 // utility function to do DST for a mobile object with no unusual modifications to the return values

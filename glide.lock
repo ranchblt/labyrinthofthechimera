@@ -1,5 +1,5 @@
 hash: d8a1560bce18a33612044e334207367a0af45a9f18505187a4f827d67b9524c2
-updated: 2017-01-15T12:40:05.5694847-05:00
+updated: 2017-02-07T22:35:45.8031388-05:00
 imports:
 - name: github.com/go-gl/gl
   version: b303bcb3e83b7ef645a5104e1c2db7f8d9e8918a
@@ -8,34 +8,45 @@ imports:
 - name: github.com/go-gl/glfw
   version: 6e7202f2d691ed1d79bcdaed6cce0061006ce565
   subpackages:
-  - v3.1/glfw
+  - v3.2/glfw
 - name: github.com/gopherjs/gopherjs
-  version: 0203db228191af09ef6f5644c623f25280d22ba3
+  version: e34a5cd6a1bc7c4fde759f2d3039852fc68b5fcc
   subpackages:
   - js
 - name: github.com/gopherjs/webgl
   version: a2d36020a9b2af0f7aefb23467ab48f3b501beec
 - name: github.com/hajimehoshi/ebiten
-  version: 96284a564f3b14d0507670bf9268bb0970768e5f
+  version: 52f57c4a6aa698d814f4a5d54729ac938446d7e8
   subpackages:
+  - internal/affine
+  - internal/endian
   - internal/graphics
-  - internal/graphics/opengl
   - internal/jni
   - internal/loop
-  - internal/pixels
+  - internal/opengl
+  - internal/restorable
   - internal/ui
 - name: github.com/pelletier/go-buffruneio
   version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
 - name: github.com/pelletier/go-toml
   version: d464759235b8fd59f8ab4c44807d7c36e1678add
+- name: github.com/ranchblt/geometry-jumper
+  version: 04b040767c19b3253583d63fcaaab714df2a71fd
+  subpackages:
+  - collision
 - name: github.com/ranchblt/statemanager
   version: f08714fe0764ed3b8c1216415a83267c120cc0b6
 - name: github.com/uber-go/atomic
   version: 0c9e689d64f004564b79d9a663634756df322902
 - name: github.com/uber-go/zap
-  version: a5783ee4b216a927da8f839c45cfbf9d694e1467
+  version: 35cd7966cc81adc0449c91b3f6b1939812be73aa
+- name: golang.org/x/image
+  version: 5286ed5c2aec7fc7d08323e7e4423b171caf84cb
+  subpackages:
+  - draw
+  - math/f64
 - name: golang.org/x/mobile
-  version: 100a59ffc15acb7702334fcaac3e892d6d404096
+  version: b8794a2669da6680501f9ebc6c555553dc46b1ee
   subpackages:
   - gl
 testImports: []

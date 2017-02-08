@@ -115,3 +115,7 @@ func (w *wizard) Src(i int) (x0, y0, x1, y1 int) {
 	width, height := w.image.Size()
 	return 0, 0, width, height
 }
+
+func (w *wizard) activate(p *powerup) {
+	// TODO implement powerup logic here, somehow.
+}

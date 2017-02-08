@@ -1,10 +1,15 @@
 package labyrinth
 
-import "github.com/hajimehoshi/ebiten"
+import (
+	"image"
+
+	"github.com/hajimehoshi/ebiten"
+)
 
 type monster struct {
 	health    int
 	image     *ebiten.Image
+	rgba      *image.RGBA
 	center    *coord
 	active    bool
 	moveClass movementClass
@@ -63,4 +68,20 @@ func (m *monster) Src(i int) (x0, y0, x1, y1 int) {
 func (m *monster) offScreen() bool {
 	w, _ := m.image.Size()
 	return m.center.X()-w > ScreenWidth
+}
+
+func (m *monster) RGBAImage() *image.RGBA {
+	if m.rgba == nil {
+		m.rgba = toRGBA(m.image)
+	}
+	return m.rgba
+}
+
+func (m *monster) hit(fireball *fireball) {
+	// TODO take the damage of the fireball into account somehow...
+	m.health -= 1
+	if m.health <= 0 {
+		// TODO should have some kind of "I DIED" animation somehow...
+		m.active = false
+	}
 }

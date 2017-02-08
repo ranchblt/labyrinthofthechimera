@@ -2,6 +2,7 @@ package labyrinth
 
 import (
 	"errors"
+	"image"
 
 	"github.com/hajimehoshi/ebiten"
 )
@@ -14,6 +15,7 @@ const (
 
 type fireball struct {
 	image     *ebiten.Image
+	rgba      *image.RGBA
 	moveSpeed int
 	center    *coord
 	class     fireballClass
@@ -69,6 +71,19 @@ func (f *fireball) Src(i int) (x0, y0, x1, y1 int) {
 func (f *fireball) offScreen() bool {
 	w, _ := f.image.Size()
 	return f.center.X()-w > ScreenWidth
+}
+
+func (f *fireball) RGBAImage() *image.RGBA {
+	if f.rgba == nil {
+		f.rgba = toRGBA(f.image)
+	}
+	return f.rgba
+}
+
+func (f *fireball) hit() {
+	// this should probably trigger some kind of animation. could also
+	// potentially have powerups that spawn more shots or something. clusterbombs!
+	f.active = false
 }
 
 type fireballCreator struct {

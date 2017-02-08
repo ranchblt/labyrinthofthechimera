@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
+	"github.com/ranchblt/geometry-jumper/collision"
 )
 
 const gameStateID = "game"
@@ -26,6 +27,7 @@ type gameState struct {
 	// TFE this is just for testing, should not stay this way
 	monsterImage *ebiten.Image
 	monster      *monster
+	monsters     []*monster
 }
 
 func (s *gameState) OnEnter() error {
@@ -41,6 +43,7 @@ func (s *gameState) OnEnter() error {
 		moveClass: straightLine,
 		speed:     1,
 	}
+	s.monsters = append(s.monsters, s.monster)
 	return nil
 }
 
@@ -64,9 +67,10 @@ func (s *gameState) Draw(r *ebiten.Image) error {
 		}
 	}
 
-	// TFE this is just for testing, should not stay this way
-	if err := s.monster.Draw(r); err != nil {
-		return err
+	for _, m := range s.monsters {
+		if err := m.Draw(r); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -93,9 +97,10 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 }
 
 func (s *gameState) Update() error {
-	// TFE this is just for testing, should not stay this way
-	if err := s.monster.Update(); err != nil {
-		return err
+	for _, m := range s.monsters {
+		if err := m.Update(); err != nil {
+			return err
+		}
 	}
 
 	if err := s.wizard.Update(s.keyboardWrapper); err != nil {
@@ -124,7 +129,47 @@ func (s *gameState) Update() error {
 		s.powerupTimerStarted = true
 	}
 
+	s.collisions()
+
 	return nil
+}
+
+func (s *gameState) collisions() {
+	for _, fireball := range s.wizard.fireballs {
+		fireballHitbox := collision.Hitbox{
+			Image:  fireball.RGBAImage(),
+			Center: fireball.center,
+		}
+		for _, monster := range s.monsters {
+			monsterHitbox := collision.Hitbox{
+				Image:  monster.RGBAImage(),
+				Center: monster.center,
+			}
+			if collision.IsColliding(&fireballHitbox, &monsterHitbox) {
+				fireball.hit()
+				monster.hit(fireball)
+			}
+		}
+
+		for _, powerup := range s.powerups {
+			width, height := powerup.image.Size()
+			width = width / 2
+			height = height / 2
+			powerupHitbox := collision.Hitbox{
+				Image: powerup.RGBAImage(),
+				// boy I hope this works.
+				Center: &coord{
+					x: powerup.topLeft.x + width,
+					y: powerup.topLeft.y + height,
+				},
+			}
+			if collision.IsColliding(&fireballHitbox, &powerupHitbox) {
+				fireball.hit()
+				s.wizard.activate(powerup)
+				powerup.expired = true
+			}
+		}
+	}
 }
 
 func (s *gameState) ID() string {

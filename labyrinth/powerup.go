@@ -1,6 +1,7 @@
 package labyrinth
 
 import (
+	"image"
 	"time"
 
 	"github.com/hajimehoshi/ebiten"
@@ -8,6 +9,7 @@ import (
 
 type powerup struct {
 	image   *ebiten.Image
+	rgba    *image.RGBA
 	class   powerupClass
 	expired bool
 	topLeft *coord
@@ -48,4 +50,11 @@ func (p *powerup) Dst(i int) (x0, y0, x1, y1 int) {
 func (p *powerup) Src(i int) (x0, y0, x1, y1 int) {
 	width, height := p.image.Size()
 	return 0, 0, width, height
+}
+
+func (p *powerup) RGBAImage() *image.RGBA {
+	if p.rgba == nil {
+		p.rgba = toRGBA(p.image)
+	}
+	return p.rgba
 }
