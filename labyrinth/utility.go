@@ -45,17 +45,6 @@ func toRGBA(img image.Image) *image.RGBA {
 	return out
 }
 
-// utility function to do DST for a mobile object with no unusual modifications to the return values
-func defaultMobileDST(i int, center *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
-	width, height := image.Size()
-	height = height / 2
-	width = width / 2
-	return center.x - width,
-		center.y - height,
-		center.x + width,
-		center.y + height
-}
-
 // utility function to do DST for a stationary object with no unusual modifications to the return values
 func defaultStationaryDST(i int, topLeft *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
 	width, height := image.Size()
@@ -63,4 +52,13 @@ func defaultStationaryDST(i int, topLeft *coord, image *ebiten.Image) (x0, y0, x
 		topLeft.Y(),
 		topLeft.X() + width,
 		topLeft.Y() + height
+}
+
+// center finds the center coords based on the topLeft and the size of the image
+func center(topLeft *coord, image *ebiten.Image) *coord {
+	w, h := image.Size()
+	return &coord{
+		x: topLeft.X() + w/2,
+		y: topLeft.Y() + h/2,
+	}
 }

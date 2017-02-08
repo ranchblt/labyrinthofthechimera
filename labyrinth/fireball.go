@@ -17,7 +17,7 @@ type fireball struct {
 	image     *ebiten.Image
 	rgba      *image.RGBA
 	moveSpeed int
-	center    *coord
+	topLeft   *coord
 	class     fireballClass
 	active    bool
 }
@@ -54,12 +54,12 @@ func (f *fireball) Len() int {
 }
 
 func (f *fireball) updateNormalFireball() error {
-	f.center.x += f.moveSpeed
+	f.topLeft.x += f.moveSpeed
 	return nil
 }
 
 func (f *fireball) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultMobileDST(i, f.center, f.image)
+	return defaultStationaryDST(i, f.topLeft, f.image)
 }
 
 func (f *fireball) Src(i int) (x0, y0, x1, y1 int) {
@@ -69,8 +69,7 @@ func (f *fireball) Src(i int) (x0, y0, x1, y1 int) {
 
 // offscreen checks if the left most part of the image is past the ScreenWidth
 func (f *fireball) offScreen() bool {
-	w, _ := f.image.Size()
-	return f.center.X()-w > ScreenWidth
+	return f.topLeft.X() > ScreenWidth
 }
 
 func (f *fireball) RGBAImage() *image.RGBA {
@@ -94,7 +93,7 @@ type fireballCreator struct {
 func (f *fireballCreator) newFireball(c coord, class fireballClass) *fireball {
 	return &fireball{
 		image:     f.image,
-		center:    &c,
+		topLeft:   &c,
 		moveSpeed: f.moveSpeed,
 		class:     class,
 		active:    true,

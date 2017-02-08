@@ -29,11 +29,11 @@ func (c coord) Y() int {
 	return c.y
 }
 
-// Hitbox is an image with a center on a Cartesian coordinate system.
+// Hitbox is an image with a topLeft on a Cartesian coordinate system.
 type Hitbox struct {
 	Image   image.Image
 	rgbaImg *image.RGBA
-	Center  Coord
+	TopLeft Coord
 }
 
 // IsColliding checks if 2 hitboxs are colliding
@@ -61,10 +61,10 @@ func (hb *Hitbox) height() int {
 
 // Check if this shape contains these coords
 func (hb *Hitbox) checkIfContains(c Coord) bool {
-	minX := hb.Center.X() - hb.width()/2
-	maxX := hb.Center.X() + hb.width()/2
-	minY := hb.Center.Y() - hb.height()/2
-	maxY := hb.Center.Y() + hb.height()/2
+	minX := hb.TopLeft.X()
+	maxX := hb.TopLeft.X() + hb.width()
+	minY := hb.TopLeft.Y()
+	maxY := hb.TopLeft.Y() + hb.height()/2
 	//fmt.Printf("minX: %d, maxX: %d, minY: %d, maxY: %d", minX, maxX, minY, maxY)
 	if c.X() > minX && c.X() < maxX && c.Y() > minY && c.Y() < maxY {
 		return true
@@ -72,26 +72,19 @@ func (hb *Hitbox) checkIfContains(c Coord) bool {
 	return false
 }
 
-// Based on the center coord convert the pixel in the image to where on the coordinate
+// Based on the topLeft coord convert the pixel in the image to where on the coordinate
 // it is.
 func (hb *Hitbox) convertPixelToCoord(x, y int) Coord {
-	topLeft := coord{
-		x: hb.Center.X() - hb.width()/2,
-		y: hb.Center.Y() - hb.height()/2,
+	return &coord{
+		x: hb.TopLeft.X() + x,
+		y: hb.TopLeft.Y() + y,
 	}
-	topLeft.x = topLeft.x + x
-	topLeft.y = topLeft.y + y
-	return topLeft
 }
 
 // Convert a coordinate location to what number pixel it is.
 func (hb *Hitbox) convertCoordToPixel(c Coord) (x, y int) {
-	topLeft := coord{
-		x: hb.Center.X() - hb.width()/2,
-		y: hb.Center.Y() - hb.height()/2,
-	}
-	px := c.X() - topLeft.x
-	py := c.Y() - topLeft.y
+	px := c.X() - hb.TopLeft.X()
+	py := c.Y() - hb.TopLeft.Y()
 	return px, py
 }
 

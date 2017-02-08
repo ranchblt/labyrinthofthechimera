@@ -4,7 +4,7 @@ import "github.com/hajimehoshi/ebiten"
 
 type wizard struct {
 	image             *ebiten.Image
-	Center            *coord
+	TopLeft           *coord
 	moveSpeed         int
 	fireballs         []*fireball
 	fireCreator       *fireballCreator
@@ -15,16 +15,14 @@ type wizard struct {
 
 // newWizard returns an initialized wizard
 func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key, minPlayAreaHeight int) *wizard {
-	_, h := i.Size()
 	c := &coord{
-		x: 100,
-		// 40 is half the image height for the wizard
-		y: minPlayAreaHeight + h/2,
+		x: 50,
+		y: minPlayAreaHeight,
 	}
 
 	return &wizard{
 		image:             i,
-		Center:            c,
+		TopLeft:           c,
 		moveSpeed:         speed,
 		fireCreator:       fbc,
 		upKeys:            upkeys,
@@ -52,7 +50,9 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 
 	if keys.IsKeyPressed(ebiten.KeySpace) {
 		if len(w.fireballs) == 0 {
-			f := w.fireCreator.newFireball(*w.Center, normalFireball)
+			// We cannot send a pointer to newFireball because then when we move
+			// the fireball it will move the wizard! Comical, yes but not desired.
+			f := w.fireCreator.newFireball(*center(w.TopLeft, w.image), normalFireball)
 			w.fireballs = append(w.fireballs, f)
 		}
 	}
@@ -74,18 +74,16 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 }
 
 func (w *wizard) moveUp() {
-	w.Center.y -= w.moveSpeed
-	_, height := w.image.Size()
-	if w.Center.y-(height/2) <= w.minPlayAreaHeight {
-		w.Center.y = w.minPlayAreaHeight + (height / 2)
+	w.TopLeft.y -= w.moveSpeed
+	if w.TopLeft.y <= w.minPlayAreaHeight {
+		w.TopLeft.y = w.minPlayAreaHeight
 	}
 }
 
 func (w *wizard) moveDown() {
-	w.Center.y += w.moveSpeed
-	_, height := w.image.Size()
-	if w.Center.y+(height/2) >= ScreenHeight {
-		w.Center.y = ScreenHeight - (height / 2)
+	w.TopLeft.y += w.moveSpeed
+	if w.TopLeft.y >= ScreenHeight {
+		w.TopLeft.y = ScreenHeight
 	}
 }
 
@@ -108,7 +106,7 @@ func (w *wizard) Len() int {
 }
 
 func (w *wizard) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultMobileDST(i, w.Center, w.image)
+	return defaultStationaryDST(i, w.TopLeft, w.image)
 }
 
 func (w *wizard) Src(i int) (x0, y0, x1, y1 int) {

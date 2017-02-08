@@ -10,7 +10,7 @@ type monster struct {
 	health    int
 	image     *ebiten.Image
 	rgba      *image.RGBA
-	center    *coord
+	topLeft   *coord
 	active    bool
 	moveClass movementClass
 	speed     int
@@ -49,7 +49,7 @@ func (m *monster) Draw(r *ebiten.Image) error {
 }
 
 func (m *monster) straightLineMove() {
-	m.center.x -= m.speed
+	m.topLeft.x -= m.speed
 }
 
 func (m *monster) Len() int {
@@ -57,7 +57,7 @@ func (m *monster) Len() int {
 }
 
 func (m *monster) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultMobileDST(i, m.center, m.image)
+	return defaultStationaryDST(i, m.topLeft, m.image)
 }
 
 func (m *monster) Src(i int) (x0, y0, x1, y1 int) {
@@ -67,7 +67,7 @@ func (m *monster) Src(i int) (x0, y0, x1, y1 int) {
 
 func (m *monster) offScreen() bool {
 	w, _ := m.image.Size()
-	return m.center.X()-w > ScreenWidth
+	return m.topLeft.X()+w > ScreenWidth
 }
 
 func (m *monster) RGBAImage() *image.RGBA {

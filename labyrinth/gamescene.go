@@ -35,7 +35,7 @@ func (s *gameState) OnEnter() error {
 	s.monster = &monster{
 		health: 3,
 		image:  s.monsterImage,
-		center: &coord{
+		topLeft: &coord{
 			x: ScreenWidth - 50,
 			y: 360,
 		},
@@ -137,13 +137,13 @@ func (s *gameState) Update() error {
 func (s *gameState) collisions() {
 	for _, fireball := range s.wizard.fireballs {
 		fireballHitbox := collision.Hitbox{
-			Image:  fireball.RGBAImage(),
-			Center: fireball.center,
+			Image:   fireball.RGBAImage(),
+			TopLeft: fireball.topLeft,
 		}
 		for _, monster := range s.monsters {
 			monsterHitbox := collision.Hitbox{
-				Image:  monster.RGBAImage(),
-				Center: monster.center,
+				Image:   monster.RGBAImage(),
+				TopLeft: monster.topLeft,
 			}
 			if collision.IsColliding(&fireballHitbox, &monsterHitbox) {
 				fireball.hit()
@@ -155,7 +155,7 @@ func (s *gameState) collisions() {
 			powerupHitbox := collision.Hitbox{
 				Image: powerup.RGBAImage(),
 				// boy I hope this works.
-				Center: powerup.Center(),
+				TopLeft: powerup.topLeft,
 			}
 			if collision.IsColliding(&fireballHitbox, &powerupHitbox) {
 				fireball.hit()
@@ -181,7 +181,7 @@ func (s *gameState) spawnPowerup() {
 		image: s.fastPowerupImage,
 		class: fastPowerup,
 		topLeft: &coord{
-			x: s.rand.Intn(ScreenWidth-width/2-s.wizard.Center.X()-padding*2) + width/2 + s.wizard.Center.X() + padding,
+			x: s.rand.Intn(ScreenWidth-width-s.wizard.TopLeft.X()-padding*2) + width + s.wizard.TopLeft.X() + padding,
 			y: s.rand.Intn(ScreenHeight-s.minPlayAreaHeight-padding*2) + s.minPlayAreaHeight + padding,
 		},
 	})

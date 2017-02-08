@@ -58,13 +58,3 @@ func (p *powerup) RGBAImage() *image.RGBA {
 	}
 	return p.rgba
 }
-
-func (p *powerup) Center() *coord {
-	width, height := p.image.Size()
-	width = width / 2
-	height = height / 2
-	return &coord{
-		x: p.topLeft.x + width,
-		y: p.topLeft.y + height,
-	}
-}
