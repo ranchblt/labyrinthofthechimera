@@ -64,7 +64,7 @@ func (hb *Hitbox) checkIfContains(c Coord) bool {
 	minX := hb.TopLeft.X()
 	maxX := hb.TopLeft.X() + hb.width()
 	minY := hb.TopLeft.Y()
-	maxY := hb.TopLeft.Y() + hb.height()/2
+	maxY := hb.TopLeft.Y() + hb.height()
 	//fmt.Printf("minX: %d, maxX: %d, minY: %d, maxY: %d", minX, maxX, minY, maxY)
 	if c.X() > minX && c.X() < maxX && c.Y() > minY && c.Y() < maxY {
 		return true
