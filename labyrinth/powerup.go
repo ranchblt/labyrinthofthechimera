@@ -58,3 +58,8 @@ func (p *powerup) RGBAImage() *image.RGBA {
 	}
 	return p.rgba
 }
+
+func (p *powerup) Despawn() {
+	<-p.timer.C
+	p.expired = true
+}

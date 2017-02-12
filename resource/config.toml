@@ -11,3 +11,7 @@ min_play_area_height = 50
 
 [fireball]
 move_speed = 7
+
+[powerup]
+# in seconds
+despawn_time = 2

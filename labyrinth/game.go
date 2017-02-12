@@ -71,15 +71,16 @@ func NewGame(debug *bool) *Game {
 
 	stateManager := statemanager.New()
 	stateManager.Add(&gameState{
-		keyboardWrapper:   g.keyboardWrapper,
-		wizard:            wizard,
-		heartImage:        g.resources.heartImage,
-		lives:             g.config.Lives,
-		maxLives:          g.config.Lives,
-		fastPowerupImage:  g.resources.powerSpeedImage,
-		rand:              g.rand,
-		minPlayAreaHeight: g.config.MinPlayAreaHeight,
-		monsterImage:      g.resources.monsterImage,
+		keyboardWrapper:    g.keyboardWrapper,
+		wizard:             wizard,
+		heartImage:         g.resources.heartImage,
+		lives:              g.config.Lives,
+		maxLives:           g.config.Lives,
+		fastPowerupImage:   g.resources.powerSpeedImage,
+		rand:               g.rand,
+		minPlayAreaHeight:  g.config.MinPlayAreaHeight,
+		monsterImage:       g.resources.monsterImage,
+		powerupDespawnTime: g.config.PowerupDespawnTime,
 	})
 	stateManager.SetActive(gameStateID)
 

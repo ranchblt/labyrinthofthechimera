@@ -24,6 +24,7 @@ type gameState struct {
 	lives               int
 	rand                *rand.Rand
 	minPlayAreaHeight   int
+	powerupDespawnTime  int
 	// TFE this is just for testing, should not stay this way
 	monsterImage *ebiten.Image
 	monster      *monster
@@ -198,13 +199,17 @@ func (s *gameState) spawnPowerup() {
 	<-s.powerupTimer.C
 	width, _ := s.wizard.image.Size()
 	padding := 50
-	s.powerups = append(s.powerups, &powerup{
+	p := &powerup{
 		image: s.fastPowerupImage,
 		class: fastPowerup,
 		topLeft: &coord{
 			x: s.rand.Intn(ScreenWidth-width-s.wizard.TopLeft.X()-padding*2) + width + s.wizard.TopLeft.X() + padding,
 			y: s.rand.Intn(ScreenHeight-s.minPlayAreaHeight-padding*2) + s.minPlayAreaHeight + padding,
 		},
-	})
+		timer: time.NewTimer(time.Second * time.Duration(s.powerupDespawnTime)),
+	}
+	s.powerups = append(s.powerups, p)
+	go p.Despawn()
+
 	s.powerupTimerStarted = false
 }
