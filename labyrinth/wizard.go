@@ -117,4 +117,8 @@ func (w *wizard) Src(i int) (x0, y0, x1, y1 int) {
 
 func (w *wizard) activate(p *powerup) {
 	// TODO implement powerup logic here, somehow.
+	switch {
+	case p.class == fastPowerup:
+		w.moveSpeed += 5
+	}
 }
