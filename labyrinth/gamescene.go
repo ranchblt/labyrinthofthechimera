@@ -39,10 +39,13 @@ func (s *gameState) OnEnter() error {
 			x: ScreenWidth - 50,
 			y: 360,
 		},
-		active:    true,
-		moveClass: straightLine,
-		speed:     1,
+		active:      true,
+		moveClass:   straightLine,
+		speed:       1,
+		frameTicker: time.NewTicker(time.Millisecond * 300),
 	}
+
+	go s.monster.Animate()
 	s.monsters = append(s.monsters, s.monster)
 	return nil
 }

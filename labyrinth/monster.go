@@ -2,19 +2,21 @@ package labyrinth
 
 import (
 	"image"
+	"time"
 
 	"github.com/hajimehoshi/ebiten"
 )
 
 type monster struct {
-	health    int
-	sprite    []*ebiten.Image
-	frame     int
-	rgba      *image.RGBA
-	topLeft   *coord
-	active    bool
-	moveClass movementClass
-	speed     int
+	health      int
+	sprite      []*ebiten.Image
+	frame       int
+	frameTicker *time.Ticker
+	rgba        *image.RGBA
+	topLeft     *coord
+	active      bool
+	moveClass   movementClass
+	speed       int
 }
 
 type movementClass string
@@ -24,10 +26,6 @@ const (
 )
 
 func (m *monster) Update() error {
-	m.frame++
-	if m.frame >= m.Len() {
-		m.frame = 0
-	}
 	if m.offScreen() {
 		m.active = false
 		return nil
@@ -95,5 +93,14 @@ func (m *monster) powerup(powerup *powerup) {
 	switch {
 	case powerup.class == fastPowerup:
 		m.speed += 5
+	}
+}
+
+func (m *monster) Animate() {
+	for range m.frameTicker.C {
+		m.frame++
+		if m.frame >= m.Len() {
+			m.frame = 0
+		}
 	}
 }
