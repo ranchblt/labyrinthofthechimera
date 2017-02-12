@@ -8,23 +8,21 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/ranchblt/labyrinthofthechimera/collision"
+	"github.com/ranchblt/labyrinthofthechimera/settings"
 )
 
 const gameStateID = "game"
 
 type gameState struct {
 	keyboardWrapper     *KeyboardWrapper
+	config              *settings.Config
 	wizard              *wizard
 	heartImage          *ebiten.Image
 	fastPowerupImage    *ebiten.Image
 	powerups            []*powerup
 	powerupTimer        *time.Timer
 	powerupTimerStarted bool
-	maxLives            int
-	lives               int
 	rand                *rand.Rand
-	minPlayAreaHeight   int
-	powerupDespawnTime  int
 	// TFE this is just for testing, should not stay this way
 	monsterImage *ebiten.Image
 	monster      *monster
@@ -81,7 +79,7 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 	w, h := s.heartImage.Size()
 	//fmt.Println(ScreenWidth - (s.maxLives * w))
 	heartStartX := ScreenWidth
-	for i := s.lives; i != 0; i-- {
+	for i := s.config.Lives; i != 0; i-- {
 		h := &Stationary{
 			Image: s.heartImage,
 			topLeft: &coord{
@@ -204,9 +202,9 @@ func (s *gameState) spawnPowerup() {
 		class: fastPowerup,
 		topLeft: &coord{
 			x: s.rand.Intn(ScreenWidth-width-s.wizard.TopLeft.X()-padding*2) + width + s.wizard.TopLeft.X() + padding,
-			y: s.rand.Intn(ScreenHeight-s.minPlayAreaHeight-padding*2) + s.minPlayAreaHeight + padding,
+			y: s.rand.Intn(ScreenHeight-s.config.MinPlayAreaHeight-padding*2) + s.config.MinPlayAreaHeight + padding,
 		},
-		timer: time.NewTimer(time.Second * time.Duration(s.powerupDespawnTime)),
+		timer: time.NewTimer(time.Second * time.Duration(s.config.PowerupDespawnTime)),
 	}
 	s.powerups = append(s.powerups, p)
 	go p.Despawn()
