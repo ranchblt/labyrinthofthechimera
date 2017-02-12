@@ -14,6 +14,7 @@ type monster struct {
 	active    bool
 	moveClass movementClass
 	speed     int
+	powerups  []*powerup
 }
 
 type movementClass string
@@ -49,7 +50,7 @@ func (m *monster) Draw(r *ebiten.Image) error {
 }
 
 func (m *monster) straightLineMove() {
-	m.topLeft.x -= m.speed
+	m.topLeft.x -= getPoweredUpValue(m.speed, m.powerups, fastPlayerPowerup)
 }
 
 func (m *monster) Len() int {
@@ -57,7 +58,7 @@ func (m *monster) Len() int {
 }
 
 func (m *monster) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultStationaryDST(i, m.topLeft, m.image)
+	return defaultDST(i, m.topLeft, m.image)
 }
 
 func (m *monster) Src(i int) (x0, y0, x1, y1 int) {
@@ -86,9 +87,7 @@ func (m *monster) hit(fireball *fireball) {
 	}
 }
 
-func (m *monster) powerup(powerup *powerup) {
-	switch {
-	case powerup.class == fastPowerup:
-		m.speed += 5
-	}
+func (m *monster) powerup(p *powerup) {
+	m.powerups = append(m.powerups, p)
+	p.Activate()
 }

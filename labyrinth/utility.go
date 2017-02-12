@@ -46,7 +46,7 @@ func toRGBA(img image.Image) *image.RGBA {
 }
 
 // utility function to do DST for a stationary object with no unusual modifications to the return values
-func defaultStationaryDST(i int, topLeft *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
+func defaultDST(i int, topLeft *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
 	width, height := image.Size()
 	return topLeft.X(),
 		topLeft.Y(),
@@ -61,4 +61,16 @@ func center(topLeft *coord, image *ebiten.Image) *coord {
 		x: topLeft.X() + w/2,
 		y: topLeft.Y() + h/2,
 	}
+}
+
+func getPoweredUpValue(startValue int, powerups []*powerup, class powerupClass) int {
+	poweredUpValue := startValue
+
+	for _, p := range powerups {
+		if p.class == class {
+			poweredUpValue += p.boost
+		}
+	}
+
+	return poweredUpValue
 }

@@ -14,12 +14,18 @@ type powerup struct {
 	expired bool
 	topLeft *coord
 	timer   *time.Timer
+	// whether this powerup is active on the thing using it
+	active         bool
+	durationMillis int
+	// how much this boosts/lowers based on its class
+	boost int
 }
 
 type powerupClass string
 
 const (
-	fastPowerup = powerupClass("fast")
+	fastPlayerPowerup   = powerupClass("fastPlayer")
+	fastFireballPowerup = powerupClass("fastFireball")
 )
 
 func (p *powerup) Update() error {
@@ -44,7 +50,7 @@ func (p *powerup) Len() int {
 }
 
 func (p *powerup) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultStationaryDST(i, p.topLeft, p.image)
+	return defaultDST(i, p.topLeft, p.image)
 }
 
 func (p *powerup) Src(i int) (x0, y0, x1, y1 int) {
@@ -62,4 +68,15 @@ func (p *powerup) RGBAImage() *image.RGBA {
 func (p *powerup) Despawn() {
 	<-p.timer.C
 	p.expired = true
+}
+
+func (p *powerup) Activate() {
+	p.active = true
+	go p.Deactivate()
+}
+
+func (p *powerup) Deactivate() {
+	timer := time.NewTimer(time.Millisecond * time.Duration(p.durationMillis))
+	<-timer.C
+	p.active = false
 }

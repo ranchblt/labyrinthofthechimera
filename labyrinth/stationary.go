@@ -12,7 +12,7 @@ func (s *Stationary) Len() int {
 }
 
 func (s *Stationary) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultStationaryDST(i, s.topLeft, s.Image)
+	return defaultDST(i, s.topLeft, s.Image)
 }
 
 func (s *Stationary) Src(i int) (x0, y0, x1, y1 int) {

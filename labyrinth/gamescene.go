@@ -96,12 +96,7 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 }
 
 func (s *gameState) Update() error {
-	for _, m := range s.monsters {
-		if err := m.Update(); err != nil {
-			return err
-		}
-	}
-
+	s.updateMonsters()
 	if err := s.wizard.Update(s.keyboardWrapper); err != nil {
 		return err
 	}
@@ -110,23 +105,7 @@ func (s *gameState) Update() error {
 		return errors.New("User wanted to quit") //Best way to do this?
 	}
 
-	nonExpiredPowups := []*powerup{}
-	for _, p := range s.powerups {
-		if err := p.Update(); err != nil {
-			return err
-		}
-		if !p.expired {
-			nonExpiredPowups = append(nonExpiredPowups, p)
-		}
-	}
-	s.powerups = nonExpiredPowups
-
-	if !s.powerupTimerStarted {
-		// support random? number in future
-		s.powerupTimer = time.NewTimer(time.Second)
-		go s.spawnPowerup()
-		s.powerupTimerStarted = true
-	}
+	s.updatePowerups()
 
 	s.collisions()
 
@@ -186,6 +165,45 @@ func (s *gameState) collisions() {
 	}
 }
 
+func (s *gameState) updateMonsters() error {
+	monsters := []*monster{}
+	for _, m := range s.monsters {
+		if err := m.Update(); err != nil {
+			return err
+		}
+
+		if m.active {
+			monsters = append(monsters, m)
+		}
+	}
+
+	// Only keep active monsters in the array
+	s.monsters = monsters
+	return nil
+}
+
+func (s *gameState) updatePowerups() error {
+	nonExpiredPowups := []*powerup{}
+	for _, p := range s.powerups {
+		if err := p.Update(); err != nil {
+			return err
+		}
+		if !p.expired {
+			nonExpiredPowups = append(nonExpiredPowups, p)
+		}
+	}
+	s.powerups = nonExpiredPowups
+
+	if !s.powerupTimerStarted {
+		// support random? number in future
+		s.powerupTimer = time.NewTimer(time.Second)
+		go s.spawnPowerup()
+		s.powerupTimerStarted = true
+	}
+
+	return nil
+}
+
 func (s *gameState) ID() string {
 	return gameStateID
 }
@@ -199,12 +217,14 @@ func (s *gameState) spawnPowerup() {
 	padding := 50
 	p := &powerup{
 		image: s.fastPowerupImage,
-		class: fastPowerup,
+		class: fastFireballPowerup,
 		topLeft: &coord{
 			x: s.rand.Intn(ScreenWidth-width-s.wizard.TopLeft.X()-padding*2) + width + s.wizard.TopLeft.X() + padding,
 			y: s.rand.Intn(ScreenHeight-s.config.MinPlayAreaHeight-padding*2) + s.config.MinPlayAreaHeight + padding,
 		},
-		timer: time.NewTimer(time.Second * time.Duration(s.config.PowerupDespawnTime)),
+		timer:          time.NewTimer(time.Second * time.Duration(s.config.PowerupDespawnTime)),
+		durationMillis: 5000,
+		boost:          2,
 	}
 	s.powerups = append(s.powerups, p)
 	go p.Despawn()

@@ -59,7 +59,7 @@ func (f *fireball) updateNormalFireball() error {
 }
 
 func (f *fireball) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultStationaryDST(i, f.topLeft, f.image)
+	return defaultDST(i, f.topLeft, f.image)
 }
 
 func (f *fireball) Src(i int) (x0, y0, x1, y1 int) {
@@ -90,11 +90,11 @@ type fireballCreator struct {
 	moveSpeed int
 }
 
-func (f *fireballCreator) newFireball(c coord, class fireballClass) *fireball {
+func (f *fireballCreator) newFireball(c coord, class fireballClass, calculatedMoveSpeed int) *fireball {
 	return &fireball{
 		image:     f.image,
 		topLeft:   &c,
-		moveSpeed: f.moveSpeed,
+		moveSpeed: calculatedMoveSpeed,
 		class:     class,
 		active:    true,
 	}

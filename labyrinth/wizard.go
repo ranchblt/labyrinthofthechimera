@@ -7,6 +7,7 @@ type wizard struct {
 	TopLeft           *coord
 	moveSpeed         int
 	fireballs         []*fireball
+	powerups          []*powerup
 	fireCreator       *fireballCreator
 	upKeys            []ebiten.Key
 	downKeys          []ebiten.Key
@@ -28,6 +29,7 @@ func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkey
 		upKeys:            upkeys,
 		downKeys:          downkeys,
 		minPlayAreaHeight: minPlayAreaHeight,
+		powerups:          []*powerup{},
 	}
 }
 
@@ -52,11 +54,20 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 		if len(w.fireballs) == 0 {
 			// We cannot send a pointer to newFireball because then when we move
 			// the fireball it will move the wizard! Comical, yes but not desired.
-			f := w.fireCreator.newFireball(*center(w.TopLeft, w.image), normalFireball)
+			fireballSpeed := getPoweredUpValue(w.fireCreator.moveSpeed, w.powerups, fastFireballPowerup)
+			f := w.fireCreator.newFireball(*center(w.TopLeft, w.image), normalFireball, fireballSpeed)
 			w.fireballs = append(w.fireballs, f)
 		}
 	}
 
+	w.updateFireballs()
+
+	w.removePowerups()
+
+	return nil
+}
+
+func (w *wizard) updateFireballs() error {
 	activeFireballs := []*fireball{}
 	for _, f := range w.fireballs {
 		if err := f.Update(); err != nil {
@@ -73,15 +84,29 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 	return nil
 }
 
+func (w *wizard) removePowerups() error {
+	activePowerups := []*powerup{}
+
+	for _, p := range w.powerups {
+		if p.active {
+			activePowerups = append(activePowerups, p)
+		}
+	}
+
+	w.powerups = activePowerups
+
+	return nil
+}
+
 func (w *wizard) moveUp() {
-	w.TopLeft.y -= w.moveSpeed
+	w.TopLeft.y -= getPoweredUpValue(w.moveSpeed, w.powerups, fastPlayerPowerup)
 	if w.TopLeft.y <= w.minPlayAreaHeight {
 		w.TopLeft.y = w.minPlayAreaHeight
 	}
 }
 
 func (w *wizard) moveDown() {
-	w.TopLeft.y += w.moveSpeed
+	w.TopLeft.y += getPoweredUpValue(w.moveSpeed, w.powerups, fastPlayerPowerup)
 	_, h := w.image.Size()
 	if w.TopLeft.y+h >= ScreenHeight {
 		w.TopLeft.y = ScreenHeight - h
@@ -107,7 +132,7 @@ func (w *wizard) Len() int {
 }
 
 func (w *wizard) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultStationaryDST(i, w.TopLeft, w.image)
+	return defaultDST(i, w.TopLeft, w.image)
 }
 
 func (w *wizard) Src(i int) (x0, y0, x1, y1 int) {
@@ -116,9 +141,6 @@ func (w *wizard) Src(i int) (x0, y0, x1, y1 int) {
 }
 
 func (w *wizard) activate(p *powerup) {
-	// TODO implement powerup logic here, somehow.
-	switch {
-	case p.class == fastPowerup:
-		w.moveSpeed += 5
-	}
+	w.powerups = append(w.powerups, p)
+	p.Activate()
 }
