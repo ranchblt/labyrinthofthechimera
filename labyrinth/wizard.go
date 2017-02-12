@@ -82,8 +82,9 @@ func (w *wizard) moveUp() {
 
 func (w *wizard) moveDown() {
 	w.TopLeft.y += w.moveSpeed
-	if w.TopLeft.y >= ScreenHeight {
-		w.TopLeft.y = ScreenHeight
+	_, h := w.image.Size()
+	if w.TopLeft.y+h >= ScreenHeight {
+		w.TopLeft.y = ScreenHeight - h
 	}
 }
 
