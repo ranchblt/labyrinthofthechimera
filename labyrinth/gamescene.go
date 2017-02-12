@@ -164,6 +164,27 @@ func (s *gameState) collisions() {
 			}
 		}
 	}
+
+	// This needs to be it's own because the loop before will only
+	// run if there is a fireball ball out and this needs to be
+	// checked all the time.
+	for _, powerup := range s.powerups {
+		powerupHitbox := collision.Hitbox{
+			Image:   powerup.RGBAImage(),
+			TopLeft: powerup.topLeft,
+		}
+		for _, monster := range s.monsters {
+			monsterHitbox := collision.Hitbox{
+				Image:   monster.RGBAImage(),
+				TopLeft: monster.topLeft,
+			}
+
+			if collision.IsColliding(&powerupHitbox, &monsterHitbox) {
+				monster.powerup(powerup)
+				powerup.expired = true
+			}
+		}
+	}
 }
 
 func (s *gameState) ID() string {

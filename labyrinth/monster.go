@@ -85,3 +85,10 @@ func (m *monster) hit(fireball *fireball) {
 		m.active = false
 	}
 }
+
+func (m *monster) powerup(powerup *powerup) {
+	switch {
+	case powerup.class == fastPowerup:
+		m.speed += 5
+	}
+}
