@@ -8,7 +8,8 @@ import (
 
 type monster struct {
 	health    int
-	image     *ebiten.Image
+	sprite    []*ebiten.Image
+	frame     int
 	rgba      *image.RGBA
 	topLeft   *coord
 	active    bool
@@ -23,6 +24,10 @@ const (
 )
 
 func (m *monster) Update() error {
+	m.frame++
+	if m.frame >= m.Len() {
+		m.frame = 0
+	}
 	if m.offScreen() {
 		m.active = false
 		return nil
@@ -40,7 +45,7 @@ func (m *monster) Update() error {
 
 func (m *monster) Draw(r *ebiten.Image) error {
 	if m.active {
-		r.DrawImage(m.image, &ebiten.DrawImageOptions{
+		r.DrawImage(m.sprite[m.frame], &ebiten.DrawImageOptions{
 			ImageParts: m,
 		})
 	}
@@ -53,26 +58,26 @@ func (m *monster) straightLineMove() {
 }
 
 func (m *monster) Len() int {
-	return 1
+	return len(m.sprite)
 }
 
 func (m *monster) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultStationaryDST(i, m.topLeft, m.image)
+	return defaultStationaryDST(i, m.topLeft, m.sprite[i])
 }
 
 func (m *monster) Src(i int) (x0, y0, x1, y1 int) {
-	width, height := m.image.Size()
+	width, height := m.sprite[i].Size()
 	return 0, 0, width, height
 }
 
 func (m *monster) offScreen() bool {
-	w, _ := m.image.Size()
+	w, _ := m.sprite[0].Size()
 	return m.topLeft.X()+w > ScreenWidth
 }
 
 func (m *monster) RGBAImage() *image.RGBA {
 	if m.rgba == nil {
-		m.rgba = toRGBA(m.image)
+		m.rgba = toRGBA(m.sprite[0])
 	}
 	return m.rgba
 }

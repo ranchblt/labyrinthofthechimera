@@ -34,6 +34,7 @@ type resources struct {
 	fireballImage   *ebiten.Image
 	monsterImage    *ebiten.Image
 	powerSpeedImage *ebiten.Image
+	monsterSprite   []*ebiten.Image
 }
 
 // NewGame returns a new labyrinth game.
@@ -73,6 +74,7 @@ func NewGame(debug *bool) *Game {
 	stateManager.Add(&gameState{
 		keyboardWrapper:  g.keyboardWrapper,
 		config:           g.config,
+		resources:        g.resources,
 		wizard:           wizard,
 		heartImage:       g.resources.heartImage,
 		fastPowerupImage: g.resources.powerSpeedImage,
@@ -173,4 +175,17 @@ func initImages(res *resources) {
 
 	res.powerSpeedImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
 	handleErr(err)
+
+	g, err := openGif("Snake.gif")
+	handleErr(err)
+
+	m0, err := ebiten.NewImageFromImage(g.Image[0], ebiten.FilterNearest)
+	handleErr(err)
+
+	m1, err := ebiten.NewImageFromImage(g.Image[1], ebiten.FilterNearest)
+	handleErr(err)
+
+	res.monsterSprite = make([]*ebiten.Image, 2)
+	res.monsterSprite[0] = m0
+	res.monsterSprite[1] = m1
 }
