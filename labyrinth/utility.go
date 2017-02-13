@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"image"
 
+	"image/gif"
 	_ "image/png" // needed for png images
 
 	"github.com/hajimehoshi/ebiten"
@@ -19,6 +20,22 @@ func openImage(path string) (image.Image, error) {
 	}
 
 	image, _, err := image.Decode(bytes.NewReader(b))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return image, nil
+}
+
+// openGif gets the gif out of go-bindata
+func openGif(path string) (*gif.GIF, error) {
+	b, err := resource.Asset(path)
+	if err != nil {
+		return nil, err
+	}
+
+	image, err := gif.DecodeAll(bytes.NewReader(b))
 
 	if err != nil {
 		return nil, err

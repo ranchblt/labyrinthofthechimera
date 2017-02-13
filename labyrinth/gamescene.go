@@ -23,6 +23,7 @@ type gameState struct {
 	powerupTimer        *time.Timer
 	powerupTimerStarted bool
 	rand                *rand.Rand
+	resources           *resources
 	// TFE this is just for testing, should not stay this way
 	monsterImage *ebiten.Image
 	monster      *monster
@@ -33,15 +34,18 @@ func (s *gameState) OnEnter() error {
 	// TFE this is just for testing, should not stay this way
 	s.monster = &monster{
 		health: 3,
-		image:  s.monsterImage,
+		sprite: s.resources.monsterSprite,
 		topLeft: &coord{
 			x: ScreenWidth - 50,
 			y: 360,
 		},
-		active:    true,
-		moveClass: straightLine,
-		speed:     1,
+		active:      true,
+		moveClass:   straightLine,
+		speed:       1,
+		frameTicker: time.NewTicker(time.Millisecond * 300),
 	}
+
+	go s.monster.Animate()
 	s.monsters = append(s.monsters, s.monster)
 	return nil
 }
