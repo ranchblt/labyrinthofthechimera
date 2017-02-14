@@ -31,7 +31,7 @@ type Game struct {
 type resources struct {
 	wizardImage     *ebiten.Image
 	heartImage      *ebiten.Image
-	fireballImage   *ebiten.Image
+	fireballSprite  []*ebiten.Image
 	monsterImage    *ebiten.Image
 	powerSpeedImage *ebiten.Image
 	monsterSprite   []*ebiten.Image
@@ -57,7 +57,7 @@ func NewGame(debug *bool) *Game {
 	g.load(logger)
 
 	fbc := &fireballCreator{
-		image:     g.resources.fireballImage,
+		images:    g.resources.fireballSprite,
 		moveSpeed: g.config.FireballSpeed,
 	}
 
@@ -158,11 +158,16 @@ func initImages(res *resources) {
 	res.heartImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
 	handleErr(err)
 
-	i, err = openImage("fireball.png")
+	g, err := openGif("fireball.gif")
 	handleErr(err)
 
-	res.fireballImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
-	handleErr(err)
+	res.fireballSprite = make([]*ebiten.Image, len(g.Image))
+
+	for i, f := range g.Image {
+		frame, err := ebiten.NewImageFromImage(f, ebiten.FilterNearest)
+		handleErr(err)
+		res.fireballSprite[i] = frame
+	}
 
 	i, err = openImage("monster.png")
 	handleErr(err)
@@ -176,16 +181,14 @@ func initImages(res *resources) {
 	res.powerSpeedImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
 	handleErr(err)
 
-	g, err := openGif("Snake.gif")
+	g, err = openGif("Snake.gif")
 	handleErr(err)
 
-	m0, err := ebiten.NewImageFromImage(g.Image[0], ebiten.FilterNearest)
-	handleErr(err)
+	res.monsterSprite = make([]*ebiten.Image, len(g.Image))
 
-	m1, err := ebiten.NewImageFromImage(g.Image[1], ebiten.FilterNearest)
-	handleErr(err)
-
-	res.monsterSprite = make([]*ebiten.Image, 2)
-	res.monsterSprite[0] = m0
-	res.monsterSprite[1] = m1
+	for i, f := range g.Image {
+		frame, err := ebiten.NewImageFromImage(f, ebiten.FilterNearest)
+		handleErr(err)
+		res.monsterSprite[i] = frame
+	}
 }

@@ -14,7 +14,7 @@ const (
 )
 
 type fireball struct {
-	image     *ebiten.Image
+	sprite    Sprite
 	rgba      *image.RGBA
 	moveSpeed int
 	topLeft   *coord
@@ -41,7 +41,7 @@ func (f *fireball) Update() error {
 
 func (f *fireball) Draw(r *ebiten.Image) error {
 	if f.active {
-		r.DrawImage(f.image, &ebiten.DrawImageOptions{
+		r.DrawImage(f.sprite.CurrentFrame(), &ebiten.DrawImageOptions{
 			ImageParts: f,
 		})
 	}
@@ -50,7 +50,7 @@ func (f *fireball) Draw(r *ebiten.Image) error {
 }
 
 func (f *fireball) Len() int {
-	return 1
+	return f.sprite.Len()
 }
 
 func (f *fireball) updateNormalFireball() error {
@@ -59,11 +59,11 @@ func (f *fireball) updateNormalFireball() error {
 }
 
 func (f *fireball) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultDST(i, f.topLeft, f.image)
+	return defaultDST(i, f.topLeft, f.sprite.CurrentFrame())
 }
 
 func (f *fireball) Src(i int) (x0, y0, x1, y1 int) {
-	width, height := f.image.Size()
+	width, height := f.sprite.CurrentFrame().Size()
 	return 0, 0, width, height
 }
 
@@ -74,7 +74,7 @@ func (f *fireball) offScreen() bool {
 
 func (f *fireball) RGBAImage() *image.RGBA {
 	if f.rgba == nil {
-		f.rgba = toRGBA(f.image)
+		f.rgba = toRGBA(f.sprite.CurrentFrame())
 	}
 	return f.rgba
 }
@@ -86,13 +86,15 @@ func (f *fireball) hit() {
 }
 
 type fireballCreator struct {
-	image     *ebiten.Image
+	images    []*ebiten.Image
 	moveSpeed int
 }
 
 func (f *fireballCreator) newFireball(c coord, class fireballClass, calculatedMoveSpeed int) *fireball {
+	s := NewSprite(f.images, 70)
+	go s.Animate()
 	return &fireball{
-		image:     f.image,
+		sprite:    s,
 		topLeft:   &c,
 		moveSpeed: calculatedMoveSpeed,
 		class:     class,
