@@ -34,18 +34,17 @@ func (s *gameState) OnEnter() error {
 	// TFE this is just for testing, should not stay this way
 	s.monster = &monster{
 		health: 3,
-		sprite: s.resources.monsterSprite,
+		sprite: NewSprite(s.resources.monsterSprite, 300),
 		topLeft: &coord{
 			x: ScreenWidth - 50,
 			y: 360,
 		},
-		active:      true,
-		moveClass:   straightLine,
-		speed:       1,
-		frameTicker: time.NewTicker(time.Millisecond * 300),
+		active:    true,
+		moveClass: straightLine,
+		speed:     1,
 	}
 
-	go s.monster.Animate()
+	go s.monster.sprite.Animate()
 	s.monsters = append(s.monsters, s.monster)
 	return nil
 }

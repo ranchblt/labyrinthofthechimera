@@ -2,22 +2,19 @@ package labyrinth
 
 import (
 	"image"
-	"time"
 
 	"github.com/hajimehoshi/ebiten"
 )
 
 type monster struct {
-	health      int
-	sprite      []*ebiten.Image
-	frame       int
-	frameTicker *time.Ticker
-	rgba        *image.RGBA
-	topLeft     *coord
-	active      bool
-	moveClass   movementClass
-	speed       int
-	powerups    []*powerup
+	health    int
+	sprite    Sprite
+	rgba      *image.RGBA
+	topLeft   *coord
+	active    bool
+	moveClass movementClass
+	speed     int
+	powerups  []*powerup
 }
 
 type movementClass string
@@ -44,7 +41,7 @@ func (m *monster) Update() error {
 
 func (m *monster) Draw(r *ebiten.Image) error {
 	if m.active {
-		r.DrawImage(m.sprite[m.frame], &ebiten.DrawImageOptions{
+		r.DrawImage(m.sprite.CurrentFrame(), &ebiten.DrawImageOptions{
 			ImageParts: m,
 		})
 	}
@@ -57,26 +54,26 @@ func (m *monster) straightLineMove() {
 }
 
 func (m *monster) Len() int {
-	return len(m.sprite)
+	return m.sprite.Len()
 }
 
 func (m *monster) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultDST(i, m.topLeft, m.sprite[i])
+	return defaultDST(i, m.topLeft, m.sprite.CurrentFrame())
 }
 
 func (m *monster) Src(i int) (x0, y0, x1, y1 int) {
-	width, height := m.sprite[i].Size()
+	width, height := m.sprite.CurrentFrame().Size()
 	return 0, 0, width, height
 }
 
 func (m *monster) offScreen() bool {
-	w, _ := m.sprite[0].Size()
+	w, _ := m.sprite.CurrentFrame().Size()
 	return m.topLeft.X()+w > ScreenWidth
 }
 
 func (m *monster) RGBAImage() *image.RGBA {
 	if m.rgba == nil {
-		m.rgba = toRGBA(m.sprite[0])
+		m.rgba = toRGBA(m.sprite.CurrentFrame())
 	}
 	return m.rgba
 }
@@ -93,13 +90,4 @@ func (m *monster) hit(fireball *fireball) {
 func (m *monster) powerup(p *powerup) {
 	m.powerups = append(m.powerups, p)
 	p.Activate()
-}
-
-func (m *monster) Animate() {
-	for range m.frameTicker.C {
-		m.frame++
-		if m.frame >= m.Len() {
-			m.frame = 0
-		}
-	}
 }
