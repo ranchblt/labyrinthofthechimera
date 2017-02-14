@@ -9,13 +9,16 @@ import (
 // Config are settings that can be tweaked, easier to change in file
 // no recompile required.
 type Config struct {
-	WizardMoveSpeed    int
-	FireballSpeed      int
-	Lives              int
-	UpKeys             []string
-	DownKeys           []string
-	MinPlayAreaHeight  int
-	PowerupDespawnTime int
+	WizardMoveSpeed     int
+	FireballSpeed       int
+	FastFireballSpeed   int
+	FireballDamage      int
+	PowerFireballDamage int
+	Lives               int
+	UpKeys              []string
+	DownKeys            []string
+	MinPlayAreaHeight   int
+	PowerupDespawnTime  int
 }
 
 // New gets a new config loaded from file
@@ -56,6 +59,18 @@ func New() *Config {
 	const fbSpeed = "fireball.move_speed"
 	checkRequired(t, fbSpeed)
 	c.FireballSpeed = int(t.Get(fbSpeed).(int64))
+
+	const fastFbSpeed = "fireball.fast_move_speed"
+	checkRequired(t, fastFbSpeed)
+	c.FastFireballSpeed = int(t.Get(fastFbSpeed).(int64))
+
+	const fbDamage = "fireball.damage"
+	checkRequired(t, fbDamage)
+	c.FireballDamage = int(t.Get(fbDamage).(int64))
+
+	const powerFbDamage = "fireball.power_damage"
+	checkRequired(t, powerFbDamage)
+	c.PowerFireballDamage = int(t.Get(powerFbDamage).(int64))
 
 	const minHeight = "game.min_play_area_height"
 	checkRequired(t, minHeight)

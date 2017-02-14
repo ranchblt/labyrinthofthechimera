@@ -17,15 +17,18 @@ type powerup struct {
 	// whether this powerup is active on the thing using it
 	active         bool
 	durationMillis int
-	// how much this boosts/lowers based on its class
+	// this is kinda vestigial at this point, it only applies to fastPlayerPowerup
+	// which we're not enamored with. can probably be removed.
 	boost int
 }
 
 type powerupClass string
 
 const (
-	fastPlayerPowerup   = powerupClass("fastPlayer")
-	fastFireballPowerup = powerupClass("fastFireball")
+	fastPlayerPowerup     = powerupClass("fastPlayer")
+	fastFireballPowerup   = powerupClass("fastFireball")
+	powerFireballPowerup  = powerupClass("powerFireball")
+	branchFireballPowerup = powerupClass("branchFireball")
 )
 
 func (p *powerup) Update() error {

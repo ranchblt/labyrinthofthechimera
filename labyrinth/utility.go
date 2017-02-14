@@ -91,3 +91,13 @@ func getPoweredUpValue(startValue int, powerups []*powerup, class powerupClass) 
 
 	return poweredUpValue
 }
+
+func containsPowerupClass(powerups []*powerup, class powerupClass) bool {
+	// eat it, multiple returns.
+	for _, p := range powerups {
+		if p.class == class {
+			return true
+		}
+	}
+	return false
+}

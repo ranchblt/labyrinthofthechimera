@@ -51,13 +51,7 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 	}
 
 	if keys.IsKeyPressed(ebiten.KeySpace) {
-		if len(w.fireballs) == 0 {
-			// We cannot send a pointer to newFireball because then when we move
-			// the fireball it will move the wizard! Comical, yes but not desired.
-			fireballSpeed := getPoweredUpValue(w.fireCreator.moveSpeed, w.powerups, fastFireballPowerup)
-			f := w.fireCreator.newFireball(*center(w.TopLeft, w.image), normalFireball, fireballSpeed)
-			w.fireballs = append(w.fireballs, f)
-		}
+		w.generateFireball()
 	}
 
 	w.updateFireballs()
@@ -65,6 +59,54 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 	w.removePowerups()
 
 	return nil
+}
+
+func (w *wizard) generateFireball() {
+	if len(w.fireballs) == 0 {
+		// We cannot send a pointer to newFireball because then when we move
+		// the fireball it will move the wizard! Comical, yes but not desired.
+
+		if containsPowerupClass(w.powerups, branchFireballPowerup) {
+			// branching fireballs are a bit different. we need three new fireballs,
+			// one for up, center, and down.
+
+			// center is just a standard one
+			centerClass := w.getFireballClass(normalFireball, fastFireball, powerFireball, fastPowerFireball)
+			centerF := w.fireCreator.newFireball(*center(w.TopLeft, w.image), centerClass)
+			w.fireballs = append(w.fireballs, centerF)
+
+			// then up & down need their own special classes, so we can
+			// use the right movement behavior
+			upClass := w.getFireballClass(upFireball, fastUpFireball, powerUpFireball, fastPowerUpFireball)
+			upF := w.fireCreator.newFireball(*center(w.TopLeft, w.image), upClass)
+			w.fireballs = append(w.fireballs, upF)
+
+			downClass := w.getFireballClass(downFireball, fastDownFireball, powerDownFireball, fastPowerDownFireball)
+			downF := w.fireCreator.newFireball(*center(w.TopLeft, w.image), downClass)
+			w.fireballs = append(w.fireballs, downF)
+
+		} else {
+			class := w.getFireballClass(normalFireball, fastFireball, powerFireball, fastPowerFireball)
+			f := w.fireCreator.newFireball(*center(w.TopLeft, w.image), class)
+			w.fireballs = append(w.fireballs, f)
+		}
+	}
+}
+
+// each parameter determines what should be returned when powerups of that type are found.
+// this isn't necessarily expandible easily, but I don't see us having too many fireball types.
+func (w *wizard) getFireballClass(normalClass fireballClass, fastClass fireballClass, powerClass fireballClass, fastPowerClass fireballClass) fireballClass {
+	fast := containsPowerupClass(w.powerups, fastFireballPowerup)
+	power := containsPowerupClass(w.powerups, powerFireballPowerup)
+
+	if fast && power {
+		return fastPowerClass
+	} else if power {
+		return powerClass
+	} else if fast {
+		return fastClass
+	}
+	return normalClass
 }
 
 func (w *wizard) updateFireballs() error {

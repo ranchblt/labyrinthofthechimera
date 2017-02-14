@@ -80,7 +80,7 @@ func (m *monster) RGBAImage() *image.RGBA {
 
 func (m *monster) hit(fireball *fireball) {
 	// TODO take the damage of the fireball into account somehow...
-	m.health -= 1
+	m.health -= fireball.damage
 	if m.health <= 0 {
 		// TODO should have some kind of "I DIED" animation somehow...
 		m.active = false

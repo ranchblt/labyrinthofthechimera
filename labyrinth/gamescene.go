@@ -220,12 +220,13 @@ func (s *gameState) spawnPowerup() {
 	padding := 50
 	p := &powerup{
 		image: s.fastPowerupImage,
-		class: fastFireballPowerup,
+		class: branchFireballPowerup,
 		topLeft: &coord{
 			x: s.rand.Intn(ScreenWidth-width-s.wizard.TopLeft.X()-padding*2) + width + s.wizard.TopLeft.X() + padding,
 			y: s.rand.Intn(ScreenHeight-s.config.MinPlayAreaHeight-padding*2) + s.config.MinPlayAreaHeight + padding,
 		},
-		timer:          time.NewTimer(time.Second * time.Duration(s.config.PowerupDespawnTime)),
+		timer: time.NewTimer(time.Second * time.Duration(s.config.PowerupDespawnTime)),
+		// TODO have this be configurable?
 		durationMillis: 5000,
 		boost:          2,
 	}

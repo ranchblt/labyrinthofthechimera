@@ -57,8 +57,11 @@ func NewGame(debug *bool) *Game {
 	g.load(logger)
 
 	fbc := &fireballCreator{
-		images:    g.resources.fireballSprite,
-		moveSpeed: g.config.FireballSpeed,
+		images:        g.resources.fireballSprite,
+		moveSpeed:     g.config.FireballSpeed,
+		fastMoveSpeed: g.config.FastFireballSpeed,
+		damage:        g.config.FireballDamage,
+		powerDamage:   g.config.PowerFireballDamage,
 	}
 
 	wizard := newWizard(
