@@ -68,7 +68,7 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 func (w *wizard) generateFireball() {
 	if len(w.fireballs) == 0 {
 		w.shooting = true
-		go w.turnOffShooting(time.NewTimer(time.Millisecond * 100))
+		go w.turnOffShooting(time.NewTimer(time.Millisecond * 300))
 		// We cannot send a pointer to newFireball because then when we move
 		// the fireball it will move the wizard! Comical, yes but not desired.
 
