@@ -1,9 +1,12 @@
 package labyrinth
 
 import "github.com/hajimehoshi/ebiten"
+import "time"
 
 type wizard struct {
 	image             *ebiten.Image
+	imageShoot        *ebiten.Image
+	shooting          bool
 	TopLeft           *coord
 	moveSpeed         int
 	fireballs         []*fireball
@@ -15,7 +18,7 @@ type wizard struct {
 }
 
 // newWizard returns an initialized wizard
-func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key, minPlayAreaHeight int) *wizard {
+func newWizard(i *ebiten.Image, is *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key, minPlayAreaHeight int) *wizard {
 	c := &coord{
 		x: 50,
 		y: minPlayAreaHeight,
@@ -23,6 +26,7 @@ func newWizard(i *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkey
 
 	return &wizard{
 		image:             i,
+		imageShoot:        is,
 		TopLeft:           c,
 		moveSpeed:         speed,
 		fireCreator:       fbc,
@@ -63,6 +67,8 @@ func (w *wizard) Update(keys *KeyboardWrapper) error {
 
 func (w *wizard) generateFireball() {
 	if len(w.fireballs) == 0 {
+		w.shooting = true
+		go w.turnOffShooting(time.NewTimer(time.Millisecond * 100))
 		// We cannot send a pointer to newFireball because then when we move
 		// the fireball it will move the wizard! Comical, yes but not desired.
 
@@ -156,7 +162,11 @@ func (w *wizard) moveDown() {
 }
 
 func (w *wizard) Draw(r *ebiten.Image) error {
-	r.DrawImage(w.image, &ebiten.DrawImageOptions{
+	i := w.image
+	if w.shooting {
+		i = w.imageShoot
+	}
+	r.DrawImage(i, &ebiten.DrawImageOptions{
 		ImageParts: w,
 	})
 
@@ -185,4 +195,9 @@ func (w *wizard) Src(i int) (x0, y0, x1, y1 int) {
 func (w *wizard) activate(p *powerup) {
 	w.powerups = append(w.powerups, p)
 	p.Activate()
+}
+
+func (w *wizard) turnOffShooting(t *time.Timer) {
+	<-t.C
+	w.shooting = false
 }

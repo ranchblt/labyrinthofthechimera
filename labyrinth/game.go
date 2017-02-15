@@ -29,12 +29,13 @@ type Game struct {
 
 // resources is where all the assets are stored
 type resources struct {
-	wizardImage     *ebiten.Image
-	heartImage      *ebiten.Image
-	fireballSprite  []*ebiten.Image
-	monsterImage    *ebiten.Image
-	powerSpeedImage *ebiten.Image
-	monsterSprite   []*ebiten.Image
+	wizardImage      *ebiten.Image
+	wizardShootImage *ebiten.Image
+	heartImage       *ebiten.Image
+	fireballSprite   []*ebiten.Image
+	monsterImage     *ebiten.Image
+	powerSpeedImage  *ebiten.Image
+	monsterSprite    []*ebiten.Image
 }
 
 // NewGame returns a new labyrinth game.
@@ -66,6 +67,7 @@ func NewGame(debug *bool) *Game {
 
 	wizard := newWizard(
 		g.resources.wizardImage,
+		g.resources.wizardShootImage,
 		g.config.WizardMoveSpeed,
 		fbc,
 		g.upKeys,
@@ -194,4 +196,10 @@ func initImages(res *resources) {
 		handleErr(err)
 		res.monsterSprite[i] = frame
 	}
+
+	i, err = openImage("wizard-shooting.png")
+	handleErr(err)
+
+	res.wizardShootImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
+	handleErr(err)
 }
