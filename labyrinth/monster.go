@@ -7,14 +7,17 @@ import (
 )
 
 type monster struct {
-	health    int
-	sprite    Sprite
-	rgba      *image.RGBA
-	topLeft   *coord
-	active    bool
-	moveClass movementClass
-	speed     int
-	powerups  []*powerup
+	maxHealth       int
+	health          int
+	sprite          Sprite
+	rgba            *image.RGBA
+	topLeft         *coord
+	active          bool
+	moveClass       movementClass
+	speed           int
+	speedMultiplier int
+	powerupHeal     int
+	powerups        []*powerup
 }
 
 type movementClass string
@@ -29,12 +32,29 @@ func (m *monster) Update() error {
 		return nil
 	}
 
+	monsterSpeed := m.getMoveSpeed()
 	switch m.moveClass {
 	case straightLine:
-		m.straightLineMove()
+		m.straightLineMove(monsterSpeed)
 	default:
 		panic("unknown move class")
 	}
+
+	m.removePowerups()
+	return nil
+}
+
+func (m *monster) removePowerups() error {
+	activePowerups := []*powerup{}
+
+	for _, p := range m.powerups {
+		if p.active {
+			activePowerups = append(activePowerups, p)
+
+		}
+	}
+
+	m.powerups = activePowerups
 
 	return nil
 }
@@ -49,8 +69,16 @@ func (m *monster) Draw(r *ebiten.Image) error {
 	return nil
 }
 
-func (m *monster) straightLineMove() {
-	m.topLeft.x -= getPoweredUpValue(m.speed, m.powerups, fastPlayerPowerup)
+func (m *monster) straightLineMove(monsterSpeed int) {
+	m.topLeft.x -= monsterSpeed
+}
+
+func (m *monster) getMoveSpeed() int {
+	monsterSpeed := m.speed
+	if containsPowerupClass(m.powerups, fastFireballPowerup) {
+		monsterSpeed *= m.speedMultiplier
+	}
+	return monsterSpeed
 }
 
 func (m *monster) Len() int {
@@ -90,4 +118,10 @@ func (m *monster) hit(fireball *fireball) {
 func (m *monster) powerup(p *powerup) {
 	m.powerups = append(m.powerups, p)
 	p.Activate()
+	if p.class == powerFireballPowerup {
+		m.health += m.powerupHeal
+		if m.maxHealth < m.health {
+			m.health = m.maxHealth
+		}
+	}
 }

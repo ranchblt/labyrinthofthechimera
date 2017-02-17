@@ -18,3 +18,7 @@ power_damage = 2
 [powerup]
 # in seconds
 despawn_time = 2
+
+[monster]
+speed_multiplier = 2
+power_heal = 1

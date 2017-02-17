@@ -33,15 +33,18 @@ type gameState struct {
 func (s *gameState) OnEnter() error {
 	// TFE this is just for testing, should not stay this way
 	s.monster = &monster{
-		health: 3,
-		sprite: NewSprite(s.resources.monsterSprite, 300),
+		maxHealth: 3,
+		health:    3,
+		sprite:    NewSprite(s.resources.monsterSprite, 300),
 		topLeft: &coord{
 			x: ScreenWidth - 50,
 			y: 360,
 		},
-		active:    true,
-		moveClass: straightLine,
-		speed:     1,
+		active:          true,
+		moveClass:       straightLine,
+		speed:           1,
+		speedMultiplier: s.config.MonsterSpeedMultiplier,
+		powerupHeal:     s.config.MonsterPowerupHeal,
 	}
 
 	go s.monster.sprite.Animate()
@@ -220,14 +223,15 @@ func (s *gameState) spawnPowerup() {
 	padding := 50
 	p := &powerup{
 		image: s.fastPowerupImage,
-		class: branchFireballPowerup,
+		class: fastFireballPowerup,
 		topLeft: &coord{
 			x: s.rand.Intn(ScreenWidth-width-s.wizard.TopLeft.X()-padding*2) + width + s.wizard.TopLeft.X() + padding,
-			y: s.rand.Intn(ScreenHeight-s.config.MinPlayAreaHeight-padding*2) + s.config.MinPlayAreaHeight + padding,
+			//y: s.rand.Intn(ScreenHeight-s.config.MinPlayAreaHeight-padding*2) + s.config.MinPlayAreaHeight + padding,
+			y: 400,
 		},
 		timer: time.NewTimer(time.Second * time.Duration(s.config.PowerupDespawnTime)),
 		// TODO have this be configurable?
-		durationMillis: 5000,
+		durationMillis: 3000,
 		boost:          2,
 	}
 	s.powerups = append(s.powerups, p)

@@ -9,16 +9,18 @@ import (
 // Config are settings that can be tweaked, easier to change in file
 // no recompile required.
 type Config struct {
-	WizardMoveSpeed     int
-	FireballSpeed       int
-	FastFireballSpeed   int
-	FireballDamage      int
-	PowerFireballDamage int
-	Lives               int
-	UpKeys              []string
-	DownKeys            []string
-	MinPlayAreaHeight   int
-	PowerupDespawnTime  int
+	WizardMoveSpeed        int
+	FireballSpeed          int
+	FastFireballSpeed      int
+	FireballDamage         int
+	PowerFireballDamage    int
+	Lives                  int
+	UpKeys                 []string
+	DownKeys               []string
+	MinPlayAreaHeight      int
+	PowerupDespawnTime     int
+	MonsterSpeedMultiplier int
+	MonsterPowerupHeal     int
 }
 
 // New gets a new config loaded from file
@@ -79,6 +81,14 @@ func New() *Config {
 	const powerDespawn = "powerup.despawn_time"
 	checkRequired(t, powerDespawn)
 	c.PowerupDespawnTime = int(t.Get(powerDespawn).(int64))
+
+	const monsterSpeedMultiplier = "monster.speed_multiplier"
+	checkRequired(t, monsterSpeedMultiplier)
+	c.MonsterSpeedMultiplier = int(t.Get(monsterSpeedMultiplier).(int64))
+
+	const monsterPowerHeal = "monster.power_heal"
+	checkRequired(t, monsterPowerHeal)
+	c.MonsterPowerupHeal = int(t.Get(monsterPowerHeal).(int64))
 
 	return c
 }
