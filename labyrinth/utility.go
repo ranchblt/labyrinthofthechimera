@@ -3,7 +3,7 @@ package labyrinth
 import (
 	"image"
 
-	_ "image/png" // needed for png images
+	"github.com/ranchblt/labyrinthofthechimera/collision"
 
 	"github.com/hajimehoshi/ebiten"
 	"golang.org/x/image/draw"
@@ -21,7 +21,7 @@ func toRGBA(img image.Image) *image.RGBA {
 }
 
 // utility function to do DST for a stationary object with no unusual modifications to the return values
-func defaultDST(i int, topLeft *coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
+func defaultDST(i int, topLeft collision.Coord, image *ebiten.Image) (x0, y0, x1, y1 int) {
 	width, height := image.Size()
 	return topLeft.X(),
 		topLeft.Y(),
@@ -30,7 +30,7 @@ func defaultDST(i int, topLeft *coord, image *ebiten.Image) (x0, y0, x1, y1 int)
 }
 
 // center finds the center coords based on the topLeft and the size of the image
-func center(topLeft *coord, image *ebiten.Image) *coord {
+func center(topLeft collision.Coord, image *ebiten.Image) *coord {
 	w, h := image.Size()
 	return &coord{
 		x: topLeft.X() + w/2,

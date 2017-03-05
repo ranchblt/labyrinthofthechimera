@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"image"
 	"image/gif"
+	_ "image/png" // needed for png images
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/uber-go/zap"
