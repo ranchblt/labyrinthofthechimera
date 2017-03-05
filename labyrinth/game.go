@@ -73,6 +73,7 @@ func NewGame(debug *bool) *Game {
 		fastPowerupImage: resources.PowerSpeedImage,
 		rand:             g.rand,
 		monsterImage:     resources.MonsterImage,
+		lives:            g.config.Lives,
 	})
 	stateManager.SetActive(gameStateID)
 

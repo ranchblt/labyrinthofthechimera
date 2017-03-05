@@ -27,6 +27,7 @@ type gameState struct {
 	monsterImage *ebiten.Image
 	monster      *monster
 	monsters     []*monster
+	lives        int
 }
 
 func (s *gameState) OnEnter() error {
@@ -84,7 +85,7 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 	w, h := s.heartImage.Size()
 	//fmt.Println(ScreenWidth - (s.maxLives * w))
 	heartStartX := ScreenWidth
-	for i := s.config.Lives; i != 0; i-- {
+	for i := s.config.Lives; i != s.config.Lives-s.lives; i-- {
 		h := &Stationary{
 			Image: s.heartImage,
 			topLeft: &coord{
@@ -176,6 +177,10 @@ func (s *gameState) updateMonsters() error {
 	for _, m := range s.monsters {
 		if err := m.Update(); err != nil {
 			return err
+		}
+
+		if m.AttackRange() {
+			s.lives = s.lives - 1
 		}
 
 		if m.active {

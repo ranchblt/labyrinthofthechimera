@@ -18,6 +18,7 @@ type monster struct {
 	speedMultiplier int
 	powerupHeal     int
 	powerups        []*powerup
+	attacked        bool
 }
 
 type movementClass string
@@ -138,6 +139,18 @@ func (m *monster) RGBAImage() *image.RGBA {
 		m.rgba = toRGBA(m.sprite.CurrentFrame())
 	}
 	return m.rgba
+}
+
+func (m *monster) AttackRange() bool {
+	if !m.attacked {
+		a := m.topLeft.X() <= 0
+		if !m.attacked && a {
+			m.attacked = a
+			return true
+		}
+	}
+
+	return false
 }
 
 func (m *monster) hit(fireball *fireball) {
