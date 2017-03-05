@@ -9,13 +9,6 @@ import (
 	"golang.org/x/image/draw"
 )
 
-// handleErr panics on any error, makes error handling cleaner
-func handleErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 // helper to convert image to RGBA
 func toRGBA(img image.Image) *image.RGBA {
 	switch img.(type) {
