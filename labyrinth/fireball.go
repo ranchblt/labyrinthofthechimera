@@ -74,7 +74,7 @@ func (f *fireball) Update() error {
 
 func (f *fireball) Draw(r *ebiten.Image) error {
 	if f.active {
-		r.DrawImage(f.sprite.CurrentFrame(), &ebiten.DrawImageOptions{
+		return r.DrawImage(f.sprite.CurrentFrame(), &ebiten.DrawImageOptions{
 			ImageParts: f,
 		})
 	}
