@@ -36,7 +36,7 @@ func main() {
 
 	game := labyrinth.NewGame(debug)
 	update := game.Update
-	if err := ebiten.Run(update, labyrinth.ScreenWidth, labyrinth.ScreenHeight, 1, "Labrinth of the Chimera"); err != nil {
+	if err := ebiten.Run(update, labyrinth.ScreenWidth, labyrinth.ScreenHeight, 1, "Labrinth of the Chimera "+Version+" "+Build); err != nil {
 		log.Fatal(err)
 	}
 }
