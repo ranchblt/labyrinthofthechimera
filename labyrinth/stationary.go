@@ -5,6 +5,7 @@ import "github.com/hajimehoshi/ebiten"
 type Stationary struct {
 	Image   *ebiten.Image
 	topLeft *coord
+	scale   float64
 }
 
 func (s *Stationary) Len() int {
@@ -12,7 +13,7 @@ func (s *Stationary) Len() int {
 }
 
 func (s *Stationary) Dst(i int) (x0, y0, x1, y1 int) {
-	return defaultDST(i, s.topLeft, s.Image)
+	return scaledDST(i, s.topLeft, s.Image, s.scale)
 }
 
 func (s *Stationary) Src(i int) (x0, y0, x1, y1 int) {

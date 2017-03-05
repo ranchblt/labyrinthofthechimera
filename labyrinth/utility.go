@@ -29,6 +29,14 @@ func defaultDST(i int, topLeft collision.Coord, image *ebiten.Image) (x0, y0, x1
 		topLeft.Y() + height
 }
 
+func scaledDST(i int, topLeft collision.Coord, image *ebiten.Image, scale float64) (x0, y0, x1, y1 int) {
+	width, height := image.Size()
+	return topLeft.X(),
+		topLeft.Y(),
+		topLeft.X() + int(float64(width)*scale),
+		topLeft.Y() + int(float64(height)*scale)
+}
+
 // center finds the center coords based on the topLeft and the size of the image
 func center(topLeft collision.Coord, image *ebiten.Image) *coord {
 	w, h := image.Size()

@@ -61,11 +61,45 @@ func (m *monster) removePowerups() error {
 
 func (m *monster) Draw(r *ebiten.Image) error {
 	if m.active {
-		r.DrawImage(m.sprite.CurrentFrame(), &ebiten.DrawImageOptions{
+		err := r.DrawImage(m.sprite.CurrentFrame(), &ebiten.DrawImageOptions{
 			ImageParts: m,
 		})
+		if err != nil {
+			return err
+		}
+		if err := m.drawHearts(r); err != nil {
+			return err
+		}
 	}
 
+	return nil
+}
+
+// drawHearts puts the hearts above the monter's head based on their hp
+func (m *monster) drawHearts(r *ebiten.Image) error {
+	scale := .3
+	w, h := resources.HeartImage.Size()
+	w = int(float64(w) * scale)
+	h = int(float64(h) * scale)
+	heartStartX := m.topLeft.X()
+	for i := 0; i < m.health; i++ {
+		blankSpace := 5 * i
+		offset := i * w
+		h := &Stationary{
+			Image: resources.HeartImage,
+			topLeft: &coord{
+				x: heartStartX + offset + blankSpace,
+				y: m.topLeft.Y() - h,
+			},
+			scale: scale,
+		}
+		err := r.DrawImage(h.Image, &ebiten.DrawImageOptions{
+			ImageParts: h,
+		})
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

@@ -91,6 +91,7 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 				x: heartStartX - i*w - (5 * i),
 				y: h / 2,
 			},
+			scale: 1,
 		}
 		r.DrawImage(h.Image, &ebiten.DrawImageOptions{
 			ImageParts: h,
