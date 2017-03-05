@@ -1,48 +1,13 @@
 package labyrinth
 
 import (
-	"bytes"
 	"image"
 
-	"image/gif"
 	_ "image/png" // needed for png images
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/ranchblt/labyrinthofthechimera/resource"
 	"golang.org/x/image/draw"
 )
-
-// openImage gets the image out of go-bindata
-func openImage(path string) (image.Image, error) {
-	b, err := resource.Asset(path)
-	if err != nil {
-		return nil, err
-	}
-
-	image, _, err := image.Decode(bytes.NewReader(b))
-
-	if err != nil {
-		return nil, err
-	}
-
-	return image, nil
-}
-
-// openGif gets the gif out of go-bindata
-func openGif(path string) (*gif.GIF, error) {
-	b, err := resource.Asset(path)
-	if err != nil {
-		return nil, err
-	}
-
-	image, err := gif.DecodeAll(bytes.NewReader(b))
-
-	if err != nil {
-		return nil, err
-	}
-
-	return image, nil
-}
 
 // handleErr panics on any error, makes error handling cleaner
 func handleErr(err error) {

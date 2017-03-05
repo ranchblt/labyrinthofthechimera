@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ranchblt/labyrinthofthechimera/resource"
 	"github.com/ranchblt/labyrinthofthechimera/settings"
 
 	"github.com/hajimehoshi/ebiten"
@@ -15,27 +16,18 @@ import (
 const ScreenWidth = 1280
 const ScreenHeight = 720
 
+// resources are all the assets loaded
+var resources *resource.Resources
+
 // Game is a labyrinth game.
 type Game struct {
 	logger          zap.Logger
 	stateManager    statemanager.StateManager
 	keyboardWrapper *KeyboardWrapper
-	resources       *resources
 	config          *settings.Config
 	upKeys          []ebiten.Key
 	downKeys        []ebiten.Key
 	rand            *rand.Rand
-}
-
-// resources is where all the assets are stored
-type resources struct {
-	wizardImage      *ebiten.Image
-	wizardShootImage *ebiten.Image
-	heartImage       *ebiten.Image
-	fireballSprite   []*ebiten.Image
-	monsterImage     *ebiten.Image
-	powerSpeedImage  *ebiten.Image
-	monsterSprite    []*ebiten.Image
 }
 
 // NewGame returns a new labyrinth game.
@@ -51,14 +43,13 @@ func NewGame(debug *bool) *Game {
 	g := &Game{
 		logger:          logger,
 		keyboardWrapper: keyboardWrapper,
-		resources:       &resources{},
 		config:          settings.New(),
 	}
 
 	g.load(logger)
 
 	fbc := &fireballCreator{
-		images:        g.resources.fireballSprite,
+		images:        resources.FireballSprite,
 		moveSpeed:     g.config.FireballSpeed,
 		fastMoveSpeed: g.config.FastFireballSpeed,
 		damage:        g.config.FireballDamage,
@@ -66,8 +57,6 @@ func NewGame(debug *bool) *Game {
 	}
 
 	wizard := newWizard(
-		g.resources.wizardImage,
-		g.resources.wizardShootImage,
 		g.config.WizardMoveSpeed,
 		fbc,
 		g.upKeys,
@@ -79,12 +68,11 @@ func NewGame(debug *bool) *Game {
 	stateManager.Add(&gameState{
 		keyboardWrapper:  g.keyboardWrapper,
 		config:           g.config,
-		resources:        g.resources,
 		wizard:           wizard,
-		heartImage:       g.resources.heartImage,
-		fastPowerupImage: g.resources.powerSpeedImage,
+		heartImage:       resources.HeartImage,
+		fastPowerupImage: resources.PowerSpeedImage,
 		rand:             g.rand,
-		monsterImage:     g.resources.monsterImage,
+		monsterImage:     resources.MonsterImage,
 	})
 	stateManager.SetActive(gameStateID)
 
@@ -120,8 +108,8 @@ func (g *Game) load(logger zap.Logger) {
 	go func(g *Game) {
 		defer wg.Done()
 
-		initImages(g.resources)
-		logger.Debug("images loaded")
+		resources = resource.NewResources(logger)
+		logger.Debug("resources loaded")
 	}(g)
 
 	go func(g *Game) {
@@ -148,58 +136,4 @@ func (g *Game) load(logger zap.Logger) {
 	g.rand = rand.New(randSource)
 
 	wg.Wait()
-}
-
-func initImages(res *resources) {
-	i, err := openImage("wizard.png")
-	handleErr(err)
-
-	res.wizardImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
-	handleErr(err)
-
-	i, err = openImage("heart.png")
-	handleErr(err)
-
-	res.heartImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
-	handleErr(err)
-
-	g, err := openGif("fireball.gif")
-	handleErr(err)
-
-	res.fireballSprite = make([]*ebiten.Image, len(g.Image))
-
-	for i, f := range g.Image {
-		frame, err := ebiten.NewImageFromImage(f, ebiten.FilterNearest)
-		handleErr(err)
-		res.fireballSprite[i] = frame
-	}
-
-	i, err = openImage("monster.png")
-	handleErr(err)
-
-	res.monsterImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
-	handleErr(err)
-
-	i, err = openImage("powerup-speed.png")
-	handleErr(err)
-
-	res.powerSpeedImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
-	handleErr(err)
-
-	g, err = openGif("Snake.gif")
-	handleErr(err)
-
-	res.monsterSprite = make([]*ebiten.Image, len(g.Image))
-
-	for i, f := range g.Image {
-		frame, err := ebiten.NewImageFromImage(f, ebiten.FilterNearest)
-		handleErr(err)
-		res.monsterSprite[i] = frame
-	}
-
-	i, err = openImage("wizard-shooting.png")
-	handleErr(err)
-
-	res.wizardShootImage, err = ebiten.NewImageFromImage(i, ebiten.FilterNearest)
-	handleErr(err)
 }

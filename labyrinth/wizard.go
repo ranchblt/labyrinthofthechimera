@@ -18,15 +18,15 @@ type wizard struct {
 }
 
 // newWizard returns an initialized wizard
-func newWizard(i *ebiten.Image, is *ebiten.Image, speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key, minPlayAreaHeight int) *wizard {
+func newWizard(speed int, fbc *fireballCreator, upkeys, downkeys []ebiten.Key, minPlayAreaHeight int) *wizard {
 	c := &coord{
 		x: 50,
 		y: minPlayAreaHeight,
 	}
 
 	return &wizard{
-		image:             i,
-		imageShoot:        is,
+		image:             resources.WizardImage,
+		imageShoot:        resources.WizardShootImage,
 		TopLeft:           c,
 		moveSpeed:         speed,
 		fireCreator:       fbc,
