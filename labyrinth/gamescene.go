@@ -40,6 +40,10 @@ func (s *gameState) OnEnter() error {
 			x: ScreenWidth - 50,
 			y: 360,
 		},
+		topLeftStart: &coord{
+			x: ScreenWidth - 50,
+			y: 360,
+		},
 		active:          true,
 		moveClass:       straightLine,
 		speed:           1,
@@ -165,6 +169,11 @@ func (s *gameState) collisions() {
 			}
 
 			if collision.IsColliding(&powerupHitbox, &monsterHitbox) {
+				// wish this code could go in monster, but I don't know how?
+				if powerup.class == branchFireballPowerup {
+					copiedMonster := copyMonster(monster)
+					s.monsters = append(s.monsters, copiedMonster)
+				}
 				monster.powerup(powerup)
 				powerup.expired = true
 			}
@@ -228,7 +237,7 @@ func (s *gameState) spawnPowerup() {
 	padding := 50
 	p := &powerup{
 		image: s.fastPowerupImage,
-		class: fastFireballPowerup,
+		class: branchFireballPowerup,
 		topLeft: &coord{
 			x: s.rand.Intn(ScreenWidth-width-s.wizard.TopLeft.X()-padding*2) + width + s.wizard.TopLeft.X() + padding,
 			//y: s.rand.Intn(ScreenHeight-s.config.MinPlayAreaHeight-padding*2) + s.config.MinPlayAreaHeight + padding,

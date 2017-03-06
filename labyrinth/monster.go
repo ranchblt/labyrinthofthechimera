@@ -12,6 +12,7 @@ type monster struct {
 	sprite          Sprite
 	rgba            *image.RGBA
 	topLeft         *coord
+	topLeftStart    *coord
 	active          bool
 	moveClass       movementClass
 	speed           int
@@ -171,4 +172,26 @@ func (m *monster) powerup(p *powerup) {
 			m.health = m.maxHealth
 		}
 	}
+}
+
+func copyMonster(m *monster) *monster {
+	monster := &monster{
+		maxHealth: m.maxHealth,
+		health:    m.maxHealth,
+		sprite:    m.sprite,
+		topLeft: &coord{
+			x: m.topLeftStart.x,
+			y: m.topLeftStart.y,
+		},
+		topLeftStart: &coord{
+			x: m.topLeftStart.x,
+			y: m.topLeftStart.y,
+		},
+		active:          true,
+		moveClass:       m.moveClass,
+		speed:           m.speed,
+		speedMultiplier: m.speedMultiplier,
+		powerupHeal:     m.powerupHeal,
+	}
+	return monster
 }
