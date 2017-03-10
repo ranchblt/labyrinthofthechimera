@@ -26,6 +26,7 @@ type gameState struct {
 	monster      *monster
 	monsters     []*monster
 	lives        int
+	pausing      bool
 }
 
 func (s *gameState) OnEnter() error {
@@ -105,18 +106,21 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 }
 
 func (s *gameState) Update() error {
-	s.updateMonsters()
-	if err := s.wizard.Update(s.keyboardWrapper); err != nil {
-		return err
-	}
-
 	if s.keyboardWrapper.KeyPushed(ebiten.KeyEscape) {
 		return errors.New("User wanted to quit") //Best way to do this?
 	}
 
-	s.updatePowerups()
+	if !s.pausing {
+		s.updateMonsters()
 
-	s.collisions()
+		if err := s.wizard.Update(s.keyboardWrapper); err != nil {
+			return err
+		}
+
+		s.updatePowerups()
+
+		s.collisions()
+	}
 
 	return nil
 }
@@ -135,6 +139,8 @@ func (s *gameState) collisions() {
 			if collision.IsColliding(&fireballHitbox, &monsterHitbox) {
 				fireball.hit()
 				monster.hit(fireball)
+				s.pausing = true
+				go s.stopPausing()
 			}
 		}
 
@@ -250,4 +256,10 @@ func (s *gameState) spawnPowerup() {
 	go p.Despawn()
 
 	s.powerupTimerStarted = false
+}
+
+func (s *gameState) stopPausing() {
+	t := time.NewTimer(time.Millisecond * time.Duration(config.HitPause))
+	<-t.C
+	s.pausing = false
 }

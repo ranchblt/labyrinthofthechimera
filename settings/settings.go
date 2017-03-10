@@ -23,6 +23,7 @@ type Config struct {
 	MonsterPowerupHeal        int
 	MonsterPushback           int
 	MonsterPushbackMultiplier float64
+	HitPause                  int
 }
 
 // New gets a new config loaded from file
@@ -99,6 +100,10 @@ func New() *Config {
 	const monsterPushbackMultiplier = "monster.pushback_multiplier"
 	checkRequired(t, monsterPushbackMultiplier)
 	c.MonsterPushbackMultiplier = t.Get(monsterPushbackMultiplier).(float64)
+
+	const hitPause = "game.hit_pause"
+	checkRequired(t, hitPause)
+	c.HitPause = int(t.Get(hitPause).(int64))
 
 	return c
 }

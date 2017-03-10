@@ -9,6 +9,9 @@ down_keys = ["S", "DOWN"]
 # used for cordoning off the top bar from the game area
 min_play_area_height = 50
 
+# pause in Millisecond after a fireball hits a monster
+hit_pause = 100
+
 [fireball]
 move_speed = 7
 fast_move_speed = 14
