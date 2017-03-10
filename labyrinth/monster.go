@@ -20,6 +20,7 @@ type monster struct {
 	powerupHeal     int
 	powerups        []*powerup
 	attacked        bool
+	pushbackPixels  int
 }
 
 type movementClass string
@@ -111,6 +112,13 @@ func (m *monster) straightLineMove(monsterSpeed int) {
 
 func (m *monster) getMoveSpeed() int {
 	monsterSpeed := m.speed
+
+	if m.pushbackPixels > 0 {
+		p := int(float64(m.speed)*config.MonsterPushbackMultiplier) * -1
+		m.pushbackPixels -= p
+		return p
+	}
+
 	if containsPowerupClass(m.powerups, fastFireballPowerup) {
 		monsterSpeed *= m.speedMultiplier
 	}
@@ -161,6 +169,8 @@ func (m *monster) hit(fireball *fireball) {
 		// TODO should have some kind of "I DIED" animation somehow...
 		m.active = false
 	}
+
+	m.pushbackPixels = config.MonsterPushback
 }
 
 func (m *monster) powerup(p *powerup) {

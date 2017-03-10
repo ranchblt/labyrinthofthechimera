@@ -22,3 +22,5 @@ despawn_time = 2
 [monster]
 speed_multiplier = 2
 power_heal = 1
+pushback = 20
+pushback_multiplier = 1.5
