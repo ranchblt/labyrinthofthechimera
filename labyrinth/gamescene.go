@@ -8,14 +8,12 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/ranchblt/labyrinthofthechimera/collision"
-	"github.com/ranchblt/labyrinthofthechimera/settings"
 )
 
 const gameStateID = "game"
 
 type gameState struct {
 	keyboardWrapper     *KeyboardWrapper
-	config              *settings.Config
 	wizard              *wizard
 	heartImage          *ebiten.Image
 	fastPowerupImage    *ebiten.Image
@@ -47,8 +45,8 @@ func (s *gameState) OnEnter() error {
 		active:          true,
 		moveClass:       straightLine,
 		speed:           1,
-		speedMultiplier: s.config.MonsterSpeedMultiplier,
-		powerupHeal:     s.config.MonsterPowerupHeal,
+		speedMultiplier: config.MonsterSpeedMultiplier,
+		powerupHeal:     config.MonsterPowerupHeal,
 	}
 
 	go s.monster.sprite.Animate()
@@ -89,7 +87,7 @@ func (s *gameState) drawLives(r *ebiten.Image) error {
 	w, h := s.heartImage.Size()
 	//fmt.Println(ScreenWidth - (s.maxLives * w))
 	heartStartX := ScreenWidth
-	for i := s.config.Lives; i != s.config.Lives-s.lives; i-- {
+	for i := config.Lives; i != config.Lives-s.lives; i-- {
 		h := &Stationary{
 			Image: s.heartImage,
 			topLeft: &coord{
@@ -243,7 +241,7 @@ func (s *gameState) spawnPowerup() {
 			//y: s.rand.Intn(ScreenHeight-s.config.MinPlayAreaHeight-padding*2) + s.config.MinPlayAreaHeight + padding,
 			y: 400,
 		},
-		timer: time.NewTimer(time.Second * time.Duration(s.config.PowerupDespawnTime)),
+		timer: time.NewTimer(time.Second * time.Duration(config.PowerupDespawnTime)),
 		// TODO have this be configurable?
 		durationMillis: 3000,
 		boost:          2,
