@@ -115,7 +115,7 @@ func (m *monster) getMoveSpeed() int {
 
 	if m.pushbackPixels > 0 {
 		p := int(float64(m.speed)*config.MonsterPushbackMultiplier) * -1
-		m.pushbackPixels -= p
+		m.pushbackPixels += p // Must add here because it's a negative speed
 		return p
 	}
 

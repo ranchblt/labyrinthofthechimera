@@ -93,7 +93,7 @@ func New() *Config {
 	checkRequired(t, monsterPowerHeal)
 	c.MonsterPowerupHeal = int(t.Get(monsterPowerHeal).(int64))
 
-	const monsterPushback = "monser.pushback"
+	const monsterPushback = "monster.pushback"
 	checkRequired(t, monsterPushback)
 	c.MonsterPushback = int(t.Get(monsterPushback).(int64))
 
